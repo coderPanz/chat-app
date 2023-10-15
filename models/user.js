@@ -13,7 +13,12 @@ const UserSchema = new Schema({
     required: [true, '用户名是必须的!']
   },
   image: {
-    type: String
+    type: String,
+    default: ''
+  },
+  bio: {
+    type: String,
+    default: ''
   }
 })
 
