@@ -3,8 +3,10 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { LoginForm, Tips, Avatar, Photograph } from "@/components"
 import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter } from 'next/navigation'
 
 const CreateAccount = () => {
+  const router = useRouter()
   const { data: session } = useSession()
   // 记录表单是否弹出
   const [ isShowForm, setIsShowForm ] = useState(false)
@@ -17,8 +19,15 @@ const CreateAccount = () => {
   // 记录bio
   const [ bio, setBio ] = useState('')
 
+  // 初始化username,email,和头像, 若没有session则跳转到登录界面
   useEffect(() => {
-    setPhoto(session?.user.image)
+    if(session) {
+      setPhoto(session?.user.image)
+      setUserName(session?.user.name || '')
+      setEmail(session?.user.email || '')
+    } else {
+      router.push('/login')
+    }
   }, [session])
 
   const [ userName, setUserName ] = useState('')
@@ -26,12 +35,6 @@ const CreateAccount = () => {
 
   // 是否启用相机
   const [ photograph, setPhotograph ] = useState(false)
-
-  // 初始化username,email
-  useEffect(() => {
-    setUserName(session?.user.name || '')
-    setEmail(session?.user.email || '')
-  }, [session])
 
   // 监听表单输入
   const handleUserNameChange = (e) => {

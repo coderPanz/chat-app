@@ -22,10 +22,9 @@ const LoginForm = ({ userName, handleBioChange, handleUserNameChange, bio, email
           })
         })
         const data = await res.json() // 需要转换为json数据才是我们需要的
-        console.log(data)
-        // if(res.ok) {
-        //   router.push('/')
-        // }
+        if(res.ok) {
+          router.push('/')
+        }
       } catch (error) {
         console.log(error)
       }

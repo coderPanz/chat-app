@@ -9,14 +9,15 @@ const authOptions = NextAuth({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
       httpOptions: {
-        timeout: 10000,
+        timeout: 20000,
       },
     }),
     // ...add more providers here
   ],
-  // session: {
-  //   maxAge: 60 * 60 * 24, // Set the session timeout in seconds (e.g., 24 hours)
-  // },
+  secret: 'KqU8NNDHi+O7rxOYulTkWnc1akGwzxkMsMlRi3in6wQ=',
+  session: {
+    maxAge: 60 * 60 * 24, // Set the session timeout in seconds (e.g., 24 hours)
+  },
   // 用于定义用户身份验证期间的回调函数，例如完成用户身份信息查询、创建用户、更新会话等操作。
 
   // 在 NextAuth.js 的 signIn 回调中，你可以通过返回一个对象来传递额外的信息给客户端。这个对象会添加到用户会话(session)中，可以在组件中通过 useSession() 钩子访问到
@@ -40,14 +41,30 @@ const authOptions = NextAuth({
           })
         }
         // 登录成功，返回包含用户是否存在的信息给客户端
-        return {
-          user: { isNewUser: userExists }
-        }
+        return true
       } catch (error) {
         console.log(error)
         return false
       }
-    }
+    },
+
+    // 在session回调中, 可以给session添加一些属性, 以便组件通过useSession()访问
+    async session({ session }) {
+      const sessionUser = await User.findOne({
+        email: session.user.email,
+      });
+      // 数据库没有查询到这使用session标记为新用户true
+      if(!sessionUser) {
+        session.user.isNewUser = true
+      } else {
+        // 当到数据库中查询到数据时赋值给session对象以便客户端其他组件访问到最新数据
+        session.user.isNewUser = false
+        session.user.image = sessionUser.image
+        session.user.name = sessionUser.username
+      }
+
+      return session;
+    },
   }
 
 })
