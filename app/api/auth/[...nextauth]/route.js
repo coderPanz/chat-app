@@ -14,7 +14,7 @@ const authOptions = NextAuth({
     }),
     // ...add more providers here
   ],
-  secret: 'KqU8NNDHi+O7rxOYulTkWnc1akGwzxkMsMlRi3in6wQ=',
+  secret: process.env.SECRET,
   session: {
     maxAge: 60 * 60 * 24, // Set the session timeout in seconds (e.g., 24 hours)
   },

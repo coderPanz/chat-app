@@ -10,7 +10,7 @@ const ChatPageHeader = () => {
       {/* left */}
       <div className="flex justify-center items-center ml-3">
         <Image
-          src={"/avatars/1.png"}
+          src="/avatars/1.png"
           alt="avatar"
           height={40}
           width={40}

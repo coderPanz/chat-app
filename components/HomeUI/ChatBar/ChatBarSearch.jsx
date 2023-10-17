@@ -1,5 +1,5 @@
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
-const Search = () => {
+const ChatBarSearch = () => {
   return (
     <div className="flex justify-center items-center px-3 mt-4 ">
       <input type="text" className="w-full bg-dropdown-background-hover rounded-l-md h-[32px] px-3 py-1 focus:outline-none"/>
@@ -8,4 +8,4 @@ const Search = () => {
     </div>
   )
 }
-export default Search
+export default ChatBarSearch

@@ -1,14 +1,28 @@
-export { default as LoginForm } from './login/LoginForm'
-export { default as Provider } from './Provider'
-export { default as Avatar } from './login/Avatar'
-export { default as Photograph } from './login/Photograph'
-export { default as Main } from './Main'
-export { default as ChatPage } from './ChatPage'
-export { default as ChatList } from './ChatBar'
-export { default as ListHeader } from './ChatListHeader'
-export { default as Search } from './Search'
-export { default as MessageBar } from './MessageBar'
-export { default as ChatPageHeader } from './ChatPageHeader'
-export { default as ChatPageContainer } from './ChatPageContainer'
-export { default as Empty } from './Empty'
-export { default as UserList } from './UserList'
+
+export { default as Provider } from "./Provider";
+
+// 登录组件
+export { default as LoginForm } from "./Login/LoginForm";
+export { default as Avatar } from "./Login/Avatar";
+export { default as Photograph } from "./Login/Photograph";
+
+// 主页
+export { default as Main } from "./HomeUI/Main";
+// 主页-聊天界面
+export { default as ChatPage } from "./HomeUI/ChatPage/ChatPage";
+export { default as ChatPageInputBar } from "./HomeUI/ChatPage/ChatPageInputBar";
+export { default as ChatPageHeader } from "./HomeUI/ChatPage/ChatPageHeader";
+export { default as ChatPageContainer } from "./HomeUI/ChatPage/ChatPageContainer";
+
+// 主页-侧边栏界面
+export { default as ChatBar } from "./HomeUI/ChatBar/ChatBar";
+export { default as ChatBarHeader } from "./HomeUI/ChatBar/ChatBarHeader";
+export { default as ChatBarSearch } from "./HomeUI/ChatBar/ChatBarSearch";
+export { default as ChatBarContainer } from "./HomeUI/ChatBar/ChatBarContainer";
+
+// 聊天逻辑组件
+export { default as MessageList } from "./ChatLogic/MessageList";
+export { default as UserList } from "./ChatLogic/UserList";
+
+// 未进入聊天界面时显示的背景
+export { default as Empty } from "./Empty";

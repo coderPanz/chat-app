@@ -2,7 +2,7 @@ import { BsEmojiSunglasses } from "react-icons/bs";
 import { BsLink45Deg } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
 
-const MessageBar = () => {
+const ChatPageInputBar = () => {
   return (
     <div className="h-[70px] bg-panel-header-background px-3 py-2 flex items-center">
       {/* 左侧图标 */}
@@ -21,4 +21,4 @@ const MessageBar = () => {
     </div>
   )
 }
-export default MessageBar
+export default ChatPageInputBar

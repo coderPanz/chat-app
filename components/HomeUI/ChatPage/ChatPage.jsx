@@ -1,11 +1,11 @@
-import { MessageBar, ChatPageHeader, ChatPageContainer } from "./index"
+import { ChatPageInputBar, ChatPageHeader, ChatPageContainer } from "../../index";
 const ChatPage = () => {
   return (
     <div className="bg-conversation-panel-background w-full h-[100vh]">
       <ChatPageHeader />
       <ChatPageContainer />
-      <MessageBar />
+      <ChatPageInputBar />
     </div>
-  )
-}
-export default ChatPage
+  );
+};
+export default ChatPage;
