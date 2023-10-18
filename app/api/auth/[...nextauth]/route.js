@@ -61,6 +61,7 @@ const authOptions = NextAuth({
         session.user.isNewUser = false
         session.user.image = sessionUser.image
         session.user.name = sessionUser.username
+        session.user.bio = sessionUser.bio
       }
 
       return session;

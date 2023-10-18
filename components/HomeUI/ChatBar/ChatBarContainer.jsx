@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
 import { MessageList, UserList } from "../../index"
-// bg-search-input-container-background
 const ChatBarContainer = ({ isShowUserList }) => {
   // 保存用户列表
   const [ userList, setUserList ] = useState()
@@ -26,10 +25,11 @@ const ChatBarContainer = ({ isShowUserList }) => {
 
   return (
     // 聊天栏容器, 用于显示用户列表和消息列表的切换!
-    <div className="flex-auto overflow-auto custom-scrollbar p-3">
+    <div className="bg-search-input-container-background flex-auto custom-scrollbar overflow-auto px-3 h-full">
       {
-        isShowUserList ? 
-        <UserList userList={userList}/> :
+        // 确保userList有值的时候才传入userlist组件
+        (isShowUserList && userList) ? 
+        <UserList userList={userList} /> :
         <MessageList />
       }
     </div>

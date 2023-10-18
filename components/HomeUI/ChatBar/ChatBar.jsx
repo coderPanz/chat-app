@@ -4,9 +4,9 @@ import { ChatBarHeader, ChatBarSearch, ChatBarContainer } from "../../index";
 const ChatBar = () => {
   // 是否切换到用户列表
   const [ isShowUserList, setIsShowUserList ] = useState(false)
-  console.log(isShowUserList)
+
   return (
-    <div className="bg-dropdown-background h-[100vh] border-r-[1px] border-r-gray-600">
+    <div className="bg-search-input-container-background h-[100vh] border-r-[1px] border-r-gray-600 overflow-hidden">
       {/* 头部 */}
       <ChatBarHeader 
       setIsShowUserList={setIsShowUserList}

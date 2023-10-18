@@ -1,27 +1,16 @@
-"use client"
-import { useEffect, useState } from "react"
-
+import { UserListItem } from "../index"
 const UserList = ({ userList }) => {
-  const [ newUserList, setNewUserList ] = useState()
-  useEffect(() => {
-    // userList会有一段极短的时间为空, 所以使用Object.values时需要进行处理
-    if(userList) {
-      const res = Object.values(userList)
-      setNewUserList(res)
-    } else {
-      console.log('userlist为空1')
-    }
-  }, [userList])
-  console.log(newUserList)
+  const values = Object.values(userList)
   return (
-    <>
-    {
-      newUserList ? 
-      <div></div> :
-      <div></div>
-    }
-    </>
-      
+    <div className="rounded-md px-3 py-3 ">
+      {
+        values.map((item, index) => (
+          <UserListItem key={index} item={item} index={index} />       
+        ))
+      }
+      {/* 解决滚动到底部时显示不全现象 */}
+      <div className="h-[115px]"></div>
+    </div>
   )
 }
 
