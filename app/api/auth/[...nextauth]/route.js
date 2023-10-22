@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github"
 import { connectToDB } from "@/utils/connect-database/connect-database";
-import User from "@/models/user";
+import { User } from "@/models/index";
 const authOptions = NextAuth({
    // 在 providers 中配置更多授权服务
    providers: [
@@ -48,7 +48,7 @@ const authOptions = NextAuth({
       }
     },
 
-    // 在session回调中, 可以给session添加一些属性, 以便组件通过useSession()访问
+    // 在session回调中, 可以给session添加一些属性, 以便组件通过useSession()访问(页面刷新后也会自动)
     async session({ session }) {
       const sessionUser = await User.findOne({
         email: session.user.email,
@@ -62,6 +62,7 @@ const authOptions = NextAuth({
         session.user.image = sessionUser.image
         session.user.name = sessionUser.username
         session.user.bio = sessionUser.bio
+        session.user.id = sessionUser._id
       }
 
       return session;

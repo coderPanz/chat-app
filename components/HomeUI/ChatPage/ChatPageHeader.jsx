@@ -2,22 +2,26 @@ import { MdCall } from "react-icons/md"
 import { IoVideocam } from 'react-icons/io5'
 import { BiSearchAlt2 } from 'react-icons/bi'
 import { BsThreeDotsVertical } from 'react-icons/bs'
+import { useStateProvider } from "@/components/Context/StateContext"
 
 import Image from "next/image";
 const ChatPageHeader = () => {
+  // 获取全局状态来回显选择聊天的联系人
+  const [{ createNewChat }] = useStateProvider()
+
   return (
     <div className="bg-panel-header-background flex justify-between items-center p-3">
       {/* left */}
       <div className="flex justify-center items-center ml-3">
         <Image
-          src="/avatars/1.png"
+          src={createNewChat?.image}
           alt="avatar"
           height={40}
           width={40}
           className="rounded-full cursor-pointer"
         />
         <div className="flex flex-col ml-5 text-gray-300">
-          <span className="text-base">CoderPanz</span>
+          <span className="text-base">{createNewChat?.username}</span>
           <span className="text-xs">在线/离线</span>
         </div>
       </div>

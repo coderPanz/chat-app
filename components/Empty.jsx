@@ -1,3 +1,4 @@
+import Image from "next/image"
 const Empty = () => {
   return (
     <div className="bg-panel-header-background h-[100vh] flex justify-center items-center">

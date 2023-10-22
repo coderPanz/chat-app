@@ -1,9 +1,8 @@
 import { connectToDB } from "@/utils/connect-database/connect-database"
-import User from "@/models/user"
+import { User } from "@/models/index"
 import validateUsername from "@/utils/validateUsername"
 export const POST = async (req) => {
   const { username, bio, email, image } = await req.json()
-  console.log(username)
   try {
     // 连接数据库
     await connectToDB()

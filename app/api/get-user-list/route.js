@@ -1,5 +1,5 @@
 import { connectToDB } from "@/utils/connect-database/connect-database";
-import User from "@/models/user";
+import { User } from "@/models/index";
 import MatchSort from "@/utils/match-sort";
 export const GET = async () => {
   try {
