@@ -14,11 +14,11 @@ export const POST = async (req) => {
       message: message,
     })
 
-    
     // 双方分别保存信息-发送方保存发送的消息(保存的是message对象模型)-接收方保存接收的消息
     // 以便后期可以在聊天列表显示历史聊天
     const userFrom = await User.findById(fromId)
     const userTo = await User.findById(toId)
+    
     if(userFrom) {
       userFrom.sentMessages.push(createMessage._id)
       await userFrom.save()

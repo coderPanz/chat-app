@@ -5,7 +5,8 @@ export const initialState = {
   // newUser: false,
   contactsPage: false, // 是否显示联系人列表
   createNewChat: undefined, // 新建聊天
-  messages: undefined // 全局保存于好友的聊天信息
+  messages: undefined, // 全局保存于好友的聊天信息
+  socket: undefined,
 }
 
 // reducer函数: 返回的是更新后的 state
@@ -30,6 +31,18 @@ const reducer = (state, action) => {
       return {
         ...state,
         messages: action.messages
+      }
+    // 设置socket
+    case reducerCases.SET_SOCKET:
+      return {
+        ...state,
+        socket: action.socket
+      }
+    // 当监听到socket发送过来的数据, 把最新的数据设置到全局messages中
+    case reducerCases.ADD_MESSAGE:
+      return {
+        ...state,
+        messages: [...state.messages, action.newMessage]
       }
     default:
       return state;

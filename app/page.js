@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useSession } from "next-auth/react"
 import { useEffect } from 'react'
-import { Main, ChatPage, ChatList } from '@/components'
+import { Main } from '@/components'
 
 export default function Home() {
   const { data: session } = useSession()

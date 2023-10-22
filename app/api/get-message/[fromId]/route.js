@@ -16,7 +16,6 @@ export const GET = async (req, { params }) => {
         path: 'sender receiver'
       }
     });
-
     return new Response(JSON.stringify(messages), { status: 200 })
   } catch (error) {
     return new Response('获取消息失败!', { status: 500 })

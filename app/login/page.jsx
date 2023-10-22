@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 const Login = () => {
   const { data: session } = useSession()
   const router = useRouter()
-  console.log(session)
   // 一开始进入login页面, session为空, useEffect监控session.user.isNewUser的改变, 若登录成功回调后, session.user.isNewUser发生改变, 根据isNewUser就可以跳转到对应的页面了!
 
   // 这是一个错误示例: 导致闪屏
