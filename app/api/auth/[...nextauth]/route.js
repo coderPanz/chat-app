@@ -9,7 +9,7 @@ const authOptions = NextAuth({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
       httpOptions: {
-        timeout: 20000,
+        timeout: 30000,
       },
     }),
     // ...add more providers here

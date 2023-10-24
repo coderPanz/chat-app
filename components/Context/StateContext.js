@@ -1,8 +1,7 @@
 "use client"
+
 import { createContext, useContext, useReducer } from "react";
-
 export const StateContext = createContext()
-
 export const StateProvider = ({ initialState, reducer, children }) => (
   // 由StateContext的provider包裹起来通过value向子组件传递state和dispatch
   // 这里的value相当于state和dispatch

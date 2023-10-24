@@ -1,21 +1,16 @@
 import { connectToDB } from "@/utils/connect-database/connect-database"
-import { User } from "@/models"
+import { User, Message } from "@/models"
 
 // 获取该用户的所有消息, 包括接收和发送的信息
 export const GET = async (req, { params }) => {
   try {
-    const messages = await User.findById(params.fromId).select('sentMessages recievedMessages').populate({
-      path: 'sentMessages',
-      populate: {
-        path: 'sender receiver'
-      }
+
+    // 这样可以获取到发送方为 "A" 并且接收方为 "B" 的消息，以及发送方为 "B" 并且接收方为 "A" 的消息。
+    const messages = await Message.find({
+      sender: { $in: [params.fromId, params.toId] },
+      receiver: { $in: [params.fromId, params.toId] },
     })
-    .populate({
-      path: 'recievedMessages',
-      populate: {
-        path: 'sender receiver'
-      }
-    });
+    
     return new Response(JSON.stringify(messages), { status: 200 })
   } catch (error) {
     return new Response('获取消息失败!', { status: 500 })

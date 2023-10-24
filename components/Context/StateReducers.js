@@ -1,8 +1,6 @@
 import { reducerCases } from "./constants";
 // 初始状态
 export const initialState = {
-  // userInfo: undefined,
-  // newUser: false,
   contactsPage: false, // 是否显示联系人列表
   createNewChat: undefined, // 新建聊天
   messages: undefined, // 全局保存于好友的聊天信息
@@ -30,7 +28,7 @@ const reducer = (state, action) => {
     case reducerCases.SET_MESSAGES:
       return {
         ...state,
-        messages: action.messages
+        messages: action.messages,
       }
     // 设置socket
     case reducerCases.SET_SOCKET:
@@ -39,7 +37,8 @@ const reducer = (state, action) => {
         socket: action.socket
       }
     // 当监听到socket发送过来的数据, 把最新的数据设置到全局messages中
-    case reducerCases.ADD_MESSAGE:
+    // 更新接收到的消息
+    case reducerCases.ADD_MESSAGES:
       return {
         ...state,
         messages: [...state.messages, action.newMessage]

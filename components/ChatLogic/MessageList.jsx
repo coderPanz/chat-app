@@ -17,11 +17,11 @@ const MessageList = ({ messages }) => {
   return (
     <div>
       {/* 渲染用户发送给指定好友的信息列表 */}
-      {
-        messages?.sentMessages?.map(item => {
+      {/* {
+        messages?.map(item => {
           // 避免重复渲染相同的好友
-          const isSameUsername = names.includes(item.receiver.username)
-          if(!isSameUsername) names.push(item.receiver.username)
+          const isSameUsername = names.includes(item?.receiver?.username)
+          if(!isSameUsername) names.push(item?.receiver?.username)
           return (
             !isSameUsername && (
               <div 
@@ -48,10 +48,10 @@ const MessageList = ({ messages }) => {
             )
           );
         })
-      }
+      } */}
       {/* 渲染好友给用户发送的信息列表 */}
-      {
-        messages?.recievedMessages?.map(item => {
+      {/* {
+        messages?.map(item => {
           // 避免重复渲染相同的好友
           const isSameUsername = names.includes(item.sender.username)
           if(!isSameUsername) names.push(item.sender.username)
@@ -81,7 +81,7 @@ const MessageList = ({ messages }) => {
             )
           );
         })
-      }
+      } */}
     </div>
   )
 }
