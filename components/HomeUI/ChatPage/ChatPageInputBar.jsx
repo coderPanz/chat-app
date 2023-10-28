@@ -5,14 +5,16 @@ import { BiSolidSend } from "react-icons/bi";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useStateProvider } from "@/components/Context/StateContext";
-import { SENT_MESSAGE } from "@/utils/API-Route";
+import { SENT_TEXT_MESSAGE, SENT_IMG_MESSAGE } from "@/utils/API-Route";
 import EmojiPicker from "emoji-picker-react";
+import axios from "axios";
+import { reducerCases } from "@/components/Context/constants";
 
 const ChatPageInputBar = () => {
   // 获取当前用户登录的数据
   const { data: session } = useSession();
   // 获取当前要联系的联系人数据
-  const [{ createNewChat, socket }] = useStateProvider();
+  const [{ createNewChat, socket }, dispatch] = useStateProvider();
   // 输入的消息
   const [message, setMessage] = useState("");
   // 1. 点击发送, 聊天双方用户的id
@@ -34,7 +36,7 @@ const ChatPageInputBar = () => {
     try {
       // 点击前先检查是否输入内容
       if (message.length > 0) {
-        const res = await fetch(SENT_MESSAGE, {
+        const res = await fetch(SENT_TEXT_MESSAGE, {
           method: "POST",
           body: JSON.stringify({
             // 用户id
@@ -45,9 +47,13 @@ const ChatPageInputBar = () => {
           }),
         });
         const data = await res.json();
-        console.log(data);
         socket.current.emit("send-msg", data);
         setMessage("");
+        // 缓存该消息进入本地进行聊天窗口的更新
+        dispatch({
+          type: reducerCases.ADD_MESSAGES,
+          newMessage: data
+        })
       }
     } catch (error) {
       console.log(`发送消息出现了错误:${error}`);
@@ -70,6 +76,41 @@ const ChatPageInputBar = () => {
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
 
+  // 图片上传
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData()
+    formData.append('image', file)
+
+    const res = await axios.post(SENT_IMG_MESSAGE, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+      params: {
+        fromId: session?.user.id,
+        toId: createNewChat._id
+      }
+    })
+
+    // 发送socket消息
+    if(res.status===201) {
+      socket.current.emit('send-msg', {
+        toId: createNewChat._id,
+        fromId: session?.user.id,
+        message: res.data.message
+      })
+    }
+
+    console.log(res.data.message)
+    // 缓存该消息进入本地进行聊天窗口的更新
+    dispatch({
+      type: reducerCases.ADD_MESSAGES,
+      newMessage: res.data.message,
+      // fromSelf: true
+    })
+
+  };
+
   return (
     <div className="h-[70px] bg-panel-header-background px-3 py-2 flex items-center">
       {/* 左侧图标 */}
@@ -80,6 +121,7 @@ const ChatPageInputBar = () => {
           className="text-xl text-gray-400 mx-4 cursor-pointer"
         />
 
+        {/* emoji表情 */}
         {showEmojiPicker && (
           <div
             ref={emojiPickerRef}
@@ -89,7 +131,16 @@ const ChatPageInputBar = () => {
           </div>
         )}
 
-        <BsLink45Deg className="text-2xl text-gray-400 cursor-pointer" />
+        {/* 将文件选择器与图标进行集成，以实现更友好的用户界面。 */}
+        <label htmlFor="image-upload">
+          <BsLink45Deg className="text-2xl text-gray-400 cursor-pointer" />
+        </label>
+        <input
+          className="hidden"
+          id="image-upload"
+          type="file"
+          onChange={handleImageChange}
+        />
       </div>
       {/* 中间输入框 */}
       <div className="grow mx-5">

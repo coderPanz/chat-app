@@ -25,7 +25,7 @@ const Main = () => {
       const messages = await messageList.json();
       dispatch({
         type: reducerCases.SET_MESSAGES,
-        messages,
+        messages
       });
     };
 

@@ -11,6 +11,7 @@ const ChatPageContainer = () => {
 
   const [{ createNewChat, messages }] = useStateProvider();
 
+  console.log(messages);
   const containerRef = useRef(null);
 
   // 当切换聊天好友和发送/接收消息时回滚到底部
@@ -24,44 +25,59 @@ const ChatPageContainer = () => {
   return (
     <div className="h-[83vh] w-full">
       <div ref={containerRef} className="h-full overflow-auto custom-scrollbar">
+        {/* 文本消息 */}
+        {/* 若是发送者的消息者显示在左边, 若是发送者收到的消息则显示在右边 */}
         {messages?.map((item) => {
           const isRecieve = item.sender === createNewChat._id;
-          return (
-              isRecieve ?
-              <div
-                key={item._id}
-                className="flex items-center gap-3 justify-start p-4"
-              >
-                <Image
-                  src={createNewChat?.image}
-                  alt="avatar"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-                <AiFillCaretLeft className=" text-green-700"/>
+          return isRecieve ? (
+            <div
+              key={item._id}
+              className="flex items-center gap-3 justify-start p-4"
+            >
+              <Image
+                src={createNewChat?.image}
+                alt="avatar"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              <AiFillCaretLeft className=" text-green-700" />
+              {/* 文本消息 */}
+              {item.type === "text" && (
                 <span className="bg-green-700 rounded p-2 ml-[-17px] text-gray-200">
                   {item.message}
                 </span>
-                
-              </div> :
-
-              <div
-                key={item._id}
-                className="flex items-center gap-3 justify-end p-4"
-              >
+              )}
+              {/* 图片消息 */}
+              {/* {item.type==='image' && <Image />} */}
+            </div>
+          ) : (
+            <div
+              key={item._id}
+              className="flex items-center gap-3 justify-end p-4"
+            >
+              {/* 文本消息 */}
+              {item.type === "text" && (
                 <span className="bg-green-700 rounded p-2 text-gray-200">
                   {item.message}
                 </span>
-                <AiFillCaretRight className="ml-[-17px] text-green-700" />
-                <Image
-                  src={session?.user.image}
-                  alt="avatar"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-              </div>
+              )}
+
+              {/* 图片消息 */}
+              {
+                item.type==='image' && (
+                  <img src={`/uploads/images/${item.message}`} alt="" className="w-auto h-[200px]"/>
+                )
+              }
+              <AiFillCaretRight className="ml-[-17px] text-green-700" />
+              <Image
+                src={session?.user.image}
+                alt="avatar"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            </div>
           );
         })}
       </div>

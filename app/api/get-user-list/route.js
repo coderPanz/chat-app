@@ -7,7 +7,7 @@ export const GET = async () => {
     const data = await User.find();
 
     // 中英文用户名混合匹配排序
-    const res = await MatchSort(data)
+    const res = await MatchSort(data);
 
     return new Response(JSON.stringify(res), { status: 200 });
   } catch (error) {

@@ -1,10 +1,10 @@
 import NextAuth from "next-auth";
-import GithubProvider from "next-auth/providers/github"
+import GithubProvider from "next-auth/providers/github";
 import { connectToDB } from "@/utils/connect-database/connect-database";
 import { User } from "@/models/index";
 const authOptions = NextAuth({
-   // 在 providers 中配置更多授权服务
-   providers: [
+  // 在 providers 中配置更多授权服务
+  providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
@@ -25,26 +25,26 @@ const authOptions = NextAuth({
     async signIn({ profile }) {
       try {
         // 连接数据库
-        await connectToDB()
+        await connectToDB();
         // 检查用户是否存在
         const userExists = await User.findOne({
           email: profile.email,
         });
 
         // 若用户不存在则新建一个用户
-        if(!userExists) {
+        if (!userExists) {
           await User.create({
             email: profile.email,
             username: profile.name.replace(" ", "").toLowerCase(),
             image: profile.avatar_url,
-            bio: profile.bio.toString()
-          })
+            bio: profile.bio.toString(),
+          });
         }
         // 登录成功，返回包含用户是否存在的信息给客户端
-        return true
+        return true;
       } catch (error) {
-        console.log(error)
-        return false
+        console.log(error);
+        return false;
       }
     },
 
@@ -54,22 +54,21 @@ const authOptions = NextAuth({
         email: session.user.email,
       });
       // 数据库没有查询到这使用session标记为新用户true
-      if(!sessionUser) {
-        session.user.isNewUser = true
+      if (!sessionUser) {
+        session.user.isNewUser = true;
       } else {
         // 当到数据库中查询到数据时赋值给session对象以便客户端其他组件访问到最新数据
-        session.user.isNewUser = false
-        session.user.image = sessionUser.image
-        session.user.name = sessionUser.username
-        session.user.bio = sessionUser.bio
-        session.user.id = sessionUser._id
+        session.user.isNewUser = false;
+        session.user.image = sessionUser.image;
+        session.user.name = sessionUser.username;
+        session.user.bio = sessionUser.bio;
+        session.user.id = sessionUser._id;
       }
 
       return session;
     },
-  }
-
-})
+  },
+});
 
 // 因为点击登录登出需要匹配这个路由中的GET或者POST请求
 export { authOptions as GET, authOptions as POST };
