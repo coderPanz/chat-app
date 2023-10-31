@@ -7,15 +7,20 @@ import { Main } from '@/components'
 export default function Home() {
   const { data: session } = useSession()
   const router = useRouter()
+  // const [ loginState, setLoginState ] = useState(false)
+  // localStorage将数据存储为字符串, 若没有数据得到的是字符串undefined而不是undefined本身
+  // 使用React.lazy()Suspense 时，客户端组件将默认进行预渲染（SSR）, 使用浏览器api时会出现报错, 这时候需要进行'延迟加载跳过ssr渲染'进行优化
+  // localStorage.setItem('loginInfos', session?.user)
+  // const isLogin = localStorage.getItem('loginInfos')
   useEffect(() => {
-    if(!session?.user.email) {
+    if(!session?.user) {
       router.push('/login')
     }
-  }, [session?.user.email])
+  }, [session?.user])
 
   return (
     <div>
-      {session && <Main />}
+      {session?.user && <Main />}
     </div>
   )
 }

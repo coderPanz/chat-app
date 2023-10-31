@@ -41,15 +41,23 @@ const ChatPageContainer = () => {
                 height={40}
                 className="rounded-full"
               />
-              <AiFillCaretLeft className=" text-green-700" />
               {/* 文本消息 */}
               {item.type === "text" && (
-                <span className="bg-green-700 rounded p-2 ml-[-17px] text-gray-200">
-                  {item.message}
-                </span>
+                <>
+                  <AiFillCaretLeft className=" text-green-700" />
+                  <span className="bg-green-700 rounded p-2 ml-[-17px] text-gray-200">
+                    {item.message}
+                  </span>
+                </>
               )}
               {/* 图片消息 */}
-              {/* {item.type==='image' && <Image />} */}
+              {item.type === "image" && (
+                <img
+                  src={`/uploads/images/${item.message}`}
+                  alt=""
+                  className="w-auto h-[200px] rounded-lg"
+                />
+              )}
             </div>
           ) : (
             <div
@@ -58,18 +66,22 @@ const ChatPageContainer = () => {
             >
               {/* 文本消息 */}
               {item.type === "text" && (
-                <span className="bg-green-700 rounded p-2 text-gray-200">
-                  {item.message}
-                </span>
+                <>
+                  <span className="bg-green-700 rounded p-2 text-gray-200">
+                    {item.message}
+                  </span>
+                  <AiFillCaretRight className="ml-[-17px] text-green-700" />
+                </>
               )}
 
               {/* 图片消息 */}
-              {
-                item.type==='image' && (
-                  <img src={`/uploads/images/${item.message}`} alt="" className="w-auto h-[200px]"/>
-                )
-              }
-              <AiFillCaretRight className="ml-[-17px] text-green-700" />
+              {item.type === "image" && (
+                <img
+                  src={`/uploads/images/${item.message}`}
+                  alt=""
+                  className="w-auto h-[200px] rounded-lg mr-1"
+                />
+              )}
               <Image
                 src={session?.user.image}
                 alt="avatar"

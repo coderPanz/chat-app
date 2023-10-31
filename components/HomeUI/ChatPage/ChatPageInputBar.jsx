@@ -9,6 +9,8 @@ import { SENT_TEXT_MESSAGE, SENT_IMG_MESSAGE } from "@/utils/API-Route";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import { reducerCases } from "@/components/Context/constants";
+import { AiFillAudio } from "react-icons/ai";
+import AudioVisualizer from "@/components/ChatLogic/AudioVisualizer";
 
 const ChatPageInputBar = () => {
   // 获取当前用户登录的数据
@@ -17,12 +19,16 @@ const ChatPageInputBar = () => {
   const [{ createNewChat, socket }, dispatch] = useStateProvider();
   // 输入的消息
   const [message, setMessage] = useState("");
-  // 1. 点击发送, 聊天双方用户的id
-  // 2. 调用socket实时响应
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const emojiPickerRef = useRef();
+
+  // 是否显示语音输入
+  const [isAudioInput, setIsAudioInput] = useState(false);
+
+  // 记录鼠标是否已经按下
+  const [isMousedown, setIsMousedown] = useState(false);
 
   const handleShowEmoji = () => {
     setShowEmojiPicker((preState) => !preState);
@@ -52,8 +58,8 @@ const ChatPageInputBar = () => {
         // 缓存该消息进入本地进行聊天窗口的更新
         dispatch({
           type: reducerCases.ADD_MESSAGES,
-          newMessage: data
-        })
+          newMessage: data,
+        });
       }
     } catch (error) {
       console.log(`发送消息出现了错误:${error}`);
@@ -79,40 +85,61 @@ const ChatPageInputBar = () => {
   // 图片上传
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    const formData = new FormData()
-    formData.append('image', file)
+    const formData = new FormData();
+    formData.append("image", file);
 
     const res = await axios.post(SENT_IMG_MESSAGE, formData, {
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
       },
       params: {
         fromId: session?.user.id,
-        toId: createNewChat._id
-      }
-    })
+        toId: createNewChat._id,
+      },
+    });
 
     // 发送socket消息
-    if(res.status===201) {
-      socket.current.emit('send-msg', {
+    if (res.status === 201) {
+      socket.current.emit("send-msg", {
         toId: createNewChat._id,
         fromId: session?.user.id,
-        message: res.data.message
-      })
+        message: res.data.message,
+      });
     }
-
-    console.log(res.data.message)
     // 缓存该消息进入本地进行聊天窗口的更新
     dispatch({
       type: reducerCases.ADD_MESSAGES,
       newMessage: res.data.message,
       // fromSelf: true
-    })
-
+    });
   };
 
+  // 点击切换到输入音频输入
+  const handleAudioInput = () => {
+    setIsAudioInput((preState) => !preState);
+  };
+
+  // 处理音频输入逻辑
+  useEffect(() => {
+    const audioInput = document.getElementById("audioInput");
+    if (isAudioInput) {
+      audioInput.addEventListener("mousedown", async () => {
+        setIsMousedown(true);
+      });
+      // 这里也是监听全局鼠标放开, 因为当按下说话的时候可能会移动鼠标到输入框以外的地方松开
+      document.addEventListener("mouseup", () => {
+        setIsMousedown(false);
+      });
+    }
+    // 添加清理函数(这里需要移除全局的mousedown和mouseup事件, 移除某个dom则会出现dom没有渲染完成因而无法调用对应方法方法!)
+    return () => {
+      document.removeEventListener("mousedown", () => {});
+      document.removeEventListener("mouseup", () => {});
+    };
+  }, [isAudioInput]);
+
   return (
-    <div className="h-[70px] bg-panel-header-background px-3 py-2 flex items-center">
+    <div className="h-[70px] bg-panel-header-background px-3 py-2 flex items-center relative">
       {/* 左侧图标 */}
       <div className="flex justify-center items-center">
         <BsEmojiSunglasses
@@ -143,13 +170,44 @@ const ChatPageInputBar = () => {
         />
       </div>
       {/* 中间输入框 */}
-      <div className="grow mx-5">
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          type="text"
-          className="w-full h-[38px] rounded-md bg-input-background focus:outline-none px-3 py-1"
-        />
+      {isAudioInput ? (
+        <div className="grow mx-5">
+          <button
+            id="audioInput"
+            className="bg-gray-600 text-gray-300 w-full py-2 rounded-md"
+          >
+            按住说话
+          </button>
+        </div>
+      ) : (
+        <div className="grow mx-5">
+          <input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            type="text"
+            className="w-full h-[38px] rounded-md bg-input-background focus:outline-none px-3 py-1"
+          />
+        </div>
+      )}
+
+      {/* 按下说话时弹出语音输入界面 */}
+      {/* 语音输入效果 */}
+      <div className={isMousedown ? '': 'hidden'}>
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[100px] flex gap-7">
+          <div className="h-[80px] w-[180px] rounded-lg flex justify-center items-center">
+            <AudioVisualizer isMousedown={isMousedown} />
+          </div>
+          {/* 取消发送 */}
+          <div className="bg-red-500 h-[80px] w-[180px] rounded-lg flex justify-center items-center">
+            取消发送
+          </div>
+        </div>
+      </div>
+
+
+      {/* 右侧语音图标 */}
+      <div className="mr-3 cursor-pointer" onClick={handleAudioInput}>
+        <AiFillAudio className="text-xl text-gray-400" />
       </div>
       {/* 右侧发送按钮 */}
       <div

@@ -49,23 +49,23 @@ const Main = () => {
 
   // 接收实时消息
   // 只有当不断改变socketEvent, useEffect才能不断进行sockent的消息接收
-  useEffect(() => {
-    if (socket.current && !socketEvent) {
-      socket.current.on("msg-recieve", (data) => {
-        // 显示实时发出去的消息
-        if (messageTemp !== data._id) {
-          setMessageTemp(data._id);
-          dispatch({
-            type: reducerCases.ADD_MESSAGES,
-            newMessage: data,
-          });
-        }
-      });
-      setSocketEvent(true);
-      // setSocketEvent(preState => !preState)
-    }
-    // return () => setSocketEvent(preState => !preState) // 添加一个清理函数否则重复渲染两次消息(只是重复渲染并不会存入)
-  }, [socket.current]);
+  // useEffect(() => {
+  //   if (socket.current && !socketEvent) {
+  //     socket.current.on("msg-recieve", (data) => {
+  //       // 显示实时发出去的消息
+  //       if (messageTemp !== data._id) {
+  //         setMessageTemp(data._id);
+  //         dispatch({
+  //           type: reducerCases.ADD_MESSAGES,
+  //           newMessage: data,
+  //         });
+  //       }
+  //     });
+  //     setSocketEvent(true);
+  //     // setSocketEvent(preState => !preState)
+  //   }
+  //   // return () => setSocketEvent(preState => !preState) // 添加一个清理函数否则重复渲染两次消息(只是重复渲染并不会存入)
+  // }, [socket.current]);
 
   return (
     <div className="h-[100vh] w-[100vw] text-white grid grid-cols-12">

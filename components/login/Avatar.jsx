@@ -1,8 +1,9 @@
-"use client";
+"use client"
 import { useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 
-const Avatar = ({ setPhotograph, photograph, photo, setPhoto, photoMenuEl, isPhotoOption, setIsPhotoOption }) => {
+const Avatar = ({ setPhotograph, photograph, photo, setPhoto, isPhotoOption,photoMenuEl, setIsPhotoOption }) => {
+  
   // 是否弹出'选择文件'窗口
   const [isUpload, setIsUpload] = useState(false);
   // 是否弹出'预设头像'窗口
