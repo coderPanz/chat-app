@@ -7,8 +7,6 @@ const uploadDir = path.join(__dirname, "../../public/uploads/audios/");
 const uploadAudio = async (req, res) => {
   try {
     if (req.file) {
-      console.log(req.file)
-      console.log('first')
       const { fromId, toId } = req.query;
       const date = Date.now();
       let fileName = uploadDir + date + req.file.originalname;

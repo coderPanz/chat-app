@@ -1,9 +1,12 @@
 "use client";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { SENT_AUDIO_MESSAGE } from "@/utils/API-Route";
+import { useStateProvider } from "@/components/Context/StateContext";
+import { reducerCases } from "@/components/Context/constants";
 
 const AudioVisualizer = ({ isMousedown, session, createNewChat }) => {
+  const [{socket}, dispatch] = useStateProvider()
   let canvasRef = useRef(null);
   let streamRef = useRef(null);
   let mediaRecorderRef = useRef(null);
@@ -119,6 +122,20 @@ const AudioVisualizer = ({ isMousedown, session, createNewChat }) => {
         fromId: session?.user.id,
         toId: createNewChat?._id,
       },
+    });
+
+    // 发送socket消息
+    if (res.status === 201) {
+      socket.current.emit("send-msg", {
+        toId: createNewChat._id,
+        fromId: session?.user.id,
+        message: res.data.message,
+      });
+    }
+    // 缓存该消息进入本地进行聊天窗口的更新
+    dispatch({
+      type: reducerCases.ADD_MESSAGES,
+      newMessage: res.data.message,
     });
   };
 

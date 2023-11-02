@@ -81,6 +81,12 @@ const ChatPageContainer = () => {
                   className="w-auto h-[200px] rounded-lg mr-1"
                 />
               )}
+
+              {/* 音频消息 */}
+              {item.type === 'audio' && (
+                <audio className="text-green-500 bg-green-600 rounded-lg" src={`/uploads/audios/${item.message}`} controls></audio>
+              )
+              }
               <Image
                 src={session?.user.image}
                 alt="avatar"

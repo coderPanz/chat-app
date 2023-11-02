@@ -10,7 +10,10 @@ import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import { reducerCases } from "@/components/Context/constants";
 import { AiFillAudio } from "react-icons/ai";
-import AudioVisualizer from "@/components/ChatLogic/AudioVisualizer";
+
+// 使用延迟加载禁用服务端渲染(因为该组件使用到浏览器api)
+import dynamic from 'next/dynamic'
+const AudioVisualizer = dynamic(() => import('../../ChatLogic/AudioVisualizer'), { ssr: false })
 
 const ChatPageInputBar = () => {
   // 获取当前用户登录的数据
