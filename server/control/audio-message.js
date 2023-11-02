@@ -2,11 +2,13 @@ const Message = require("../models/message");
 const connectToDB = require("../utils/connect-database/connect-database");
 const path = require("path");
 const { renameSync } = require("fs");
-const uploadDir = path.join(__dirname, "../../public/uploads/images/");
+const uploadDir = path.join(__dirname, "../../public/uploads/audios/");
 
-const uploadImg = async (req, res) => {
+const uploadAudio = async (req, res) => {
   try {
     if (req.file) {
+      console.log(req.file)
+      console.log('first')
       const { fromId, toId } = req.query;
       const date = Date.now();
       let fileName = uploadDir + date + req.file.originalname;
@@ -22,7 +24,7 @@ const uploadImg = async (req, res) => {
           message: dateAndName,
           sender: fromId,
           receiver: toId,
-          type: "image",
+          type: "audio",
         });
         return res.status(201).json({ message });
       } else {
@@ -34,4 +36,4 @@ const uploadImg = async (req, res) => {
   }
 };
 
-module.exports = uploadImg;
+module.exports = uploadAudio;

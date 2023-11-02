@@ -195,7 +195,11 @@ const ChatPageInputBar = () => {
       <div className={isMousedown ? '': 'hidden'}>
         <div className="absolute left-1/2 -translate-x-1/2 bottom-[100px] flex gap-7">
           <div className="h-[80px] w-[180px] rounded-lg flex justify-center items-center">
-            <AudioVisualizer isMousedown={isMousedown} />
+            <AudioVisualizer 
+            isMousedown={isMousedown} 
+            session={session}
+            createNewChat={createNewChat}
+            />
           </div>
           {/* 取消发送 */}
           <div className="bg-red-500 h-[80px] w-[180px] rounded-lg flex justify-center items-center">

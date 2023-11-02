@@ -10,8 +10,7 @@ const ChatPageContainer = () => {
   const { data: session } = useSession();
 
   const [{ createNewChat, messages }] = useStateProvider();
-
-  console.log(messages);
+ 
   const containerRef = useRef(null);
 
   // 当切换聊天好友和发送/接收消息时回滚到底部

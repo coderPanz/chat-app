@@ -20,10 +20,7 @@ const Photograph = ({photograph,setPhotograph,setPhoto,photoMenuEl,setIsPhotoOpt
     return () => {
       const stream = streamRef.current;
       
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-        console.log(stream)
-      }
+      if (stream) stream.getTracks().forEach((track) => track.stop());
     }
   }, [photograph]);
 
@@ -39,7 +36,6 @@ const Photograph = ({photograph,setPhotograph,setPhoto,photoMenuEl,setIsPhotoOpt
         photoMenuEl.classList.add("scale-0");
       }, 450);
     }
-    
   };
 
   const handlePhotograph = () => {

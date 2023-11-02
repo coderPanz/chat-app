@@ -1,11 +1,14 @@
 "use client";
-import { useEffect, useRef } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { SENT_AUDIO_MESSAGE } from "@/utils/API-Route";
 
-const AudioVisualizer = ({ isMousedown }) => {
-  const canvasRef = useRef(null);
+const AudioVisualizer = ({ isMousedown, session, createNewChat }) => {
+  let canvasRef = useRef(null);
   let streamRef = useRef(null);
-  let recorderRef = useRef(null);
+  let mediaRecorderRef = useRef(null);
 
+  // 音频可视化(同时调用音频录制)
   useEffect(() => {
     let audioContext;
     let analyser;
@@ -22,19 +25,10 @@ const AudioVisualizer = ({ isMousedown }) => {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
-
-        // // 创建 MediaRecorder 对象，将音频数据录制为 WAV 格式
-        // const recorder = new MediaRecorder(stream, { mimeType: 'audio/wav' });
-        // recorderRef.current = recorder
-
-        // // 监听录制完成事件，将录制后的 Blob 对象保存为文件
-        // recorder.addEventListener('dataavailable', (event) => {
-        //   const blob = event.data;
-        //   const url = URL.createObjectURL(blob);
-        // })
-
-        // // 开始录制音频数据
-        // recorder.start();
+        // 音频录制函数
+        await audioRecord(stream);
+        // 开始录制
+        mediaRecorderRef.current.start();
 
         streamRef.current = stream;
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -48,56 +42,86 @@ const AudioVisualizer = ({ isMousedown }) => {
         const source = audioContext.createMediaStreamSource(stream);
         // 接口连接分析器
         source.connect(analyser);
+        const draw = () => {
+          requestAnimationFrame(draw);
+
+          analyser.getByteFrequencyData(dataArray);
+
+          ctx.clearRect(0, 0, WIDTH, HEIGHT);
+          ctx.fillStyle = "rgb(0, 0, 0)";
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+          let barWidth = (WIDTH / bufferLength) * 2.5;
+          let barHeight;
+          let x = 0;
+
+          for (let i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i];
+            ctx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
+            ctx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight / 2);
+            x += barWidth + 1;
+          }
+        };
         draw();
       } catch (error) {
         console.error("Error accessing microphone:", error);
       }
     };
-    const draw = () => {
-      requestAnimationFrame(draw);
 
-      analyser.getByteFrequencyData(dataArray);
-
-      ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      ctx.fillStyle = "rgb(0, 0, 0)";
-      ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-      let barWidth = (WIDTH / bufferLength) * 2.5;
-      let barHeight;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i];
-        ctx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
-        ctx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight / 2);
-
-        x += barWidth + 1;
-      }
-    };
-
-    // 当放开鼠标按钮时停止录制
-    if (isMousedown) {
-      initAudio()
-    } 
-    // else {
-    //   const recorder = recorderRef.current
-    //   if(recorder) recorder.stop()
-    // }
-
-
+    if (isMousedown) initAudio();
     return () => {
       const stream = streamRef.current;
-      if (audioContext) {
-        audioContext.close();
-      }
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      const mediaRecorder = mediaRecorderRef.current;
+      // 关闭音频上下文
+      if (audioContext) audioContext.close();
+      // 关闭音频流
+      if (stream) stream.getTracks().forEach((track) => track.stop());
+      // 停止录制-录制实例引用清空防止多次重复执行代码!
+      if (mediaRecorder) {
+        mediaRecorder.stop();
+        mediaRecorderRef.current = null;
       }
     };
   }, [isMousedown]);
 
-  return <canvas ref={canvasRef} className="h-full w-full rounded-lg" />
+  // 音频录制(录制结束时上传数据)
+  const audioRecord = async (stream) => {
+    // 创建一个 MediaRecorder 实例来录制音频。
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = mediaRecorder;
+    const chunks = [];
+    // 实时储存音频数据到chunks中
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunks.push(e.data);
+      }
+    };
+    // 监听录制结束
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(chunks, { type: "audio/mp3" });
+      // 上传数据
+      uploadAudio(audioBlob)
+    };
+  };
 
-  
+  // 上传音频数据到服务器
+  const uploadAudio = async (audioBlob) => {
+    // 将录制的音频 Blob 添加到表单中
+    const formData = new FormData();
+    // 指定了文件名为 "recording.mp3"
+    formData.append("audio", audioBlob, "recording.mp3");
+
+    const res = await axios.post(SENT_AUDIO_MESSAGE, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      params: {
+        fromId: session?.user.id,
+        toId: createNewChat?._id,
+      },
+    });
+  };
+
+  return <canvas ref={canvasRef} className="h-full w-full rounded-lg" />;
 };
 export default AudioVisualizer;
