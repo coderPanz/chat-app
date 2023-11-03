@@ -3,6 +3,7 @@ import { useStateProvider } from "@/components/Context/StateContext";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+
 import {
   AiFillCaretRight,
   AiFillCaretLeft,
@@ -30,13 +31,17 @@ const ChatPageContainer = () => {
   }, [createNewChat, messages]);
   const [isPlayIndex, setIsPlayIndex] = useState(null);
   const [isPlay, setIsPlay] = useState(false);
-  const [audioDuration, setAudioDuration] = useState(null);
+  const [allTime, setAllTime] = useState(0)
 
   const handlePlay = (index) => {
     setIsPlayIndex(index);
     setIsPlay(preState => (!preState))
-    console.log(isPlay)
     const audioEl = document.getElementById(`audio${index}`);
+    const allTime = audioEl.duration
+    // Infinity NaN 也是数字类型, 所以要避免显示它们的字符串, 而是显示真正的数字
+    if(typeof allTime === 'number' && allTime.toString() !== 'Infinity' && allTime.toString() !== 'NaN') {
+      setAllTime(allTime)
+    }
     if(!isPlay) {
       audioEl.play();
     } else {
@@ -49,7 +54,6 @@ const ChatPageContainer = () => {
       setIsPlay(false)
     });
   };
-
   return (
     <div className="h-[83vh] w-full">
       <div ref={containerRef} className="h-full overflow-auto custom-scrollbar">
@@ -113,15 +117,10 @@ const ChatPageContainer = () => {
 
               {/* 音频消息 */}
               {item.type === "audio" && (
-                <div className="flex gap-3 justify-center items-center">
+                <div className="flex justify-center items-center">
                   <audio
                     id={`audio${index}`}
                     src={`/uploads/audios/${item.message}`}
-                    onLoadedMetadata={(e) => {
-                      console.log(e.target.duration)
-                      const duration = e.target.duration;
-                      setAudioDuration(duration)
-                    }}
                   ></audio>
                   <div
                     id={`audio${index}`}
@@ -136,8 +135,8 @@ const ChatPageContainer = () => {
                       <div className="rect5"></div>
                     </div>
                   </div>
-                  <AiFillCaretRight className="ml-[-17px] text-green-600" />
-                  {audioDuration && <span>音频时长: {audioDuration} 秒</span>}
+                  <AiFillCaretRight className=" text-green-600 ml-[-5px]" />
+                  <span className="text-green-600">{(isPlayIndex===index && isPlay) && allTime+'s'}</span>
                 </div>
               )}
 
