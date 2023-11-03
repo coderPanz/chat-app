@@ -2,15 +2,23 @@
 import { useStateProvider } from "@/components/Context/StateContext";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { AiFillCaretRight } from "react-icons/ai";
-import { AiFillCaretLeft } from "react-icons/ai";
+import { useEffect, useRef, useState } from "react";
+import {
+  AiFillCaretRight,
+  AiFillCaretLeft,
+  AiFillPlayCircle,
+} from "react-icons/ai";
+import dynamic from "next/dynamic";
+const AudioVisualizer = dynamic(
+  () => import("../../ChatLogic/AudioVisualizer"),
+  { ssr: false }
+);
 
 const ChatPageContainer = () => {
   const { data: session } = useSession();
 
   const [{ createNewChat, messages }] = useStateProvider();
- 
+
   const containerRef = useRef(null);
 
   // 当切换聊天好友和发送/接收消息时回滚到底部
@@ -20,13 +28,34 @@ const ChatPageContainer = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [createNewChat, messages]);
+  const [isPlayIndex, setIsPlayIndex] = useState(null);
+  const [isPlay, setIsPlay] = useState(false);
+  const [audioDuration, setAudioDuration] = useState(null);
+
+  const handlePlay = (index) => {
+    setIsPlayIndex(index);
+    setIsPlay(preState => (!preState))
+    console.log(isPlay)
+    const audioEl = document.getElementById(`audio${index}`);
+    if(!isPlay) {
+      audioEl.play();
+    } else {
+      audioEl.pause()
+    }
+    
+    // 监听播放结束
+    audioEl.addEventListener('ended', () => {
+      setIsPlayIndex(null)
+      setIsPlay(false)
+    });
+  };
 
   return (
     <div className="h-[83vh] w-full">
       <div ref={containerRef} className="h-full overflow-auto custom-scrollbar">
         {/* 文本消息 */}
         {/* 若是发送者的消息者显示在左边, 若是发送者收到的消息则显示在右边 */}
-        {messages?.map((item) => {
+        {messages?.map((item, index) => {
           const isRecieve = item.sender === createNewChat._id;
           return isRecieve ? (
             <div
@@ -66,10 +95,10 @@ const ChatPageContainer = () => {
               {/* 文本消息 */}
               {item.type === "text" && (
                 <>
-                  <span className="bg-green-700 rounded p-2 text-gray-200">
+                  <span className="bg-green-600 rounded p-2 text-gray-200">
                     {item.message}
                   </span>
-                  <AiFillCaretRight className="ml-[-17px] text-green-700" />
+                  <AiFillCaretRight className="ml-[-17px] text-green-600" />
                 </>
               )}
 
@@ -83,10 +112,36 @@ const ChatPageContainer = () => {
               )}
 
               {/* 音频消息 */}
-              {item.type === 'audio' && (
-                <audio className="text-green-500 bg-green-600 rounded-lg" src={`/uploads/audios/${item.message}`} controls></audio>
-              )
-              }
+              {item.type === "audio" && (
+                <div className="flex gap-3 justify-center items-center">
+                  <audio
+                    id={`audio${index}`}
+                    src={`/uploads/audios/${item.message}`}
+                    onLoadedMetadata={(e) => {
+                      console.log(e.target.duration)
+                      const duration = e.target.duration;
+                      setAudioDuration(duration)
+                    }}
+                  ></audio>
+                  <div
+                    id={`audio${index}`}
+                    onClick={() => handlePlay(index)}
+                    className={`bg-green-600 flex px-2 pt-[10px] pb-2 justify-center items-center rounded `}
+                  >
+                    <div className={`load_11 ${(isPlayIndex===index && isPlay)?'audioPlay': ''}`}>
+                      <div className="rect1"></div>
+                      <div className="rect2"></div>
+                      <div className="rect3"></div>
+                      <div className="rect4"></div>
+                      <div className="rect5"></div>
+                    </div>
+                  </div>
+                  <AiFillCaretRight className="ml-[-17px] text-green-600" />
+                  {audioDuration && <span>音频时长: {audioDuration} 秒</span>}
+                </div>
+              )}
+
+              {/* 头像 */}
               <Image
                 src={session?.user.image}
                 alt="avatar"

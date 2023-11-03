@@ -177,9 +177,9 @@ const ChatPageInputBar = () => {
         <div className="grow mx-5">
           <button
             id="audioInput"
-            className="bg-gray-600 text-gray-300 w-full py-2 rounded-md"
+            className={`${isMousedown?'bg-gray-700': 'bg-gray-600'} text-gray-300 w-full py-2 rounded-md`}
           >
-            按住说话
+            {isMousedown? '松开发送': '按住说话'}
           </button>
         </div>
       ) : (
