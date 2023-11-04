@@ -24,6 +24,7 @@ export { default as ChatBarContainer } from "./HomeUI/ChatBar/ChatBarContainer";
 export { default as MessageList } from "./ChatLogic/MessageList";
 export { default as UserList } from "./ChatLogic/UserList";
 export { default as UserListItem } from "./ChatLogic/UserListItem";
+export { default as SearchMessages } from "./ChatLogic/SearchMessages";
 
 // 未进入聊天界面时显示的背景
 export { default as Empty } from "./Empty";

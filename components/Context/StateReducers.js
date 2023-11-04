@@ -5,6 +5,7 @@ export const initialState = {
   createNewChat: undefined, // 新建聊天
   messages: undefined, // 全局保存于好友的聊天信息
   socket: undefined,
+  messagesSearch: false,
 }
 
 // reducer函数: 返回的是更新后的 state
@@ -42,6 +43,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         messages: [...state.messages, action.newMessage]
+      }
+    // 查找消息
+    case reducerCases.SET_MESSAGE_SEARCH: 
+      return {
+        ...state,
+        messagesSearch: !state.messagesSearch
       }
     default:
       return state;

@@ -1,5 +1,5 @@
 "use client";
-import { ChatPage, ChatBar, Empty } from "@/components";
+import { ChatPage, ChatBar, Empty, SearchMessages } from "@/components";
 import { useStateProvider } from "../Context/StateContext";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -14,7 +14,7 @@ const Main = () => {
 
   const { data: session } = useSession();
   // 若没有创建聊天的话就显示背景图片
-  const [{ createNewChat }, dispatch] = useStateProvider();
+  const [{ createNewChat, messagesSearch }, dispatch] = useStateProvider();
   const [messageTemp, setMessageTemp] = useState("");
   // 获取该用户与对应好友的聊天记录(发送和接收)
   useEffect(() => {
@@ -74,8 +74,9 @@ const Main = () => {
       </div>
       {/* 当没有进入聊天界面时显示的一个背景 */}
       {createNewChat ? (
-        <div className="col-span-9">
+        <div className={`col-span-9 ${messagesSearch ? 'grid grid-cols-2': ''}`}>
           <ChatPage />
+          {messagesSearch && <SearchMessages />}
         </div>
       ) : (
         <div className="col-span-9">

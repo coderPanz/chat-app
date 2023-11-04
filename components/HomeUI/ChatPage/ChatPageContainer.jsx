@@ -29,19 +29,23 @@ const ChatPageContainer = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [createNewChat, messages]);
+
   const [isPlayIndex, setIsPlayIndex] = useState(null);
   const [isPlay, setIsPlay] = useState(false);
   const [allTime, setAllTime] = useState(0)
 
   const handlePlay = (index) => {
+    const audioEl = document.getElementById(`audio${index}`);
+    const allTimeCurrent = audioEl.duration
+    // Infinity NaN 也是数字类型, 所以要避免显示它们的字符串, 而是显示真正的数字
+    // 目前还是由bug待解决
+    if(typeof allTimeCurrent === 'number' && allTimeCurrent.toString() !== 'Infinity' && allTimeCurrent.toString() !== 'NaN') {
+      setAllTime(allTimeCurrent)
+    }
+
     setIsPlayIndex(index);
     setIsPlay(preState => (!preState))
-    const audioEl = document.getElementById(`audio${index}`);
-    const allTime = audioEl.duration
-    // Infinity NaN 也是数字类型, 所以要避免显示它们的字符串, 而是显示真正的数字
-    if(typeof allTime === 'number' && allTime.toString() !== 'Infinity' && allTime.toString() !== 'NaN') {
-      setAllTime(allTime)
-    }
+    
     if(!isPlay) {
       audioEl.play();
     } else {
@@ -54,6 +58,7 @@ const ChatPageContainer = () => {
       setIsPlay(false)
     });
   };
+
   return (
     <div className="h-[83vh] w-full">
       <div ref={containerRef} className="h-full overflow-auto custom-scrollbar">
