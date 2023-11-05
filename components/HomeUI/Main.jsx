@@ -1,9 +1,9 @@
 "use client";
 import { ChatPage, ChatBar, Empty, SearchMessages } from "@/components";
-import { useStateProvider } from "../Context/StateContext";
+import { useStateProvider } from "../../utils/Context/StateContext";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { reducerCases } from "../Context/constants";
+import { reducerCases } from "../../utils/Context/constants";
 import { io } from "socket.io-client";
 import { SOCKETURL } from "@/utils/API-Route";
 const Main = () => {
@@ -25,7 +25,7 @@ const Main = () => {
       const messages = await messageList.json();
       dispatch({
         type: reducerCases.SET_MESSAGES,
-        messages
+        messages,
       });
     };
 
@@ -74,7 +74,9 @@ const Main = () => {
       </div>
       {/* 当没有进入聊天界面时显示的一个背景 */}
       {createNewChat ? (
-        <div className={`col-span-9 ${messagesSearch ? 'grid grid-cols-2': ''}`}>
+        <div
+          className={`col-span-9 ${messagesSearch ? "grid grid-cols-2" : ""}`}
+        >
           <ChatPage />
           {messagesSearch && <SearchMessages />}
         </div>

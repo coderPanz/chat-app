@@ -1,14 +1,14 @@
 "use client";
 import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
-import { useStateProvider } from "@/components/Context/StateContext";
-import { reducerCases } from "@/components/Context/constants";
+import { useStateProvider } from "@/utils/Context/StateContext";
+import { reducerCases } from "@/utils/Context/constants";
 import { useEffect, useState } from "react";
 import dateFormat from "@/utils/dateFormat";
 
 const SearchMessages = () => {
   // 搜索框数据
   const [searchTerm, setSearchTerm] = useState("");
-  // 查询列表
+  // 查询的结果列表
   const [searchedMessages, setSearchedMessages] = useState([]);
 
   const [{ createNewChat, messages }, dispatch] = useStateProvider();
@@ -58,12 +58,12 @@ const SearchMessages = () => {
           <div className="flex flex-col px-3">
             {/* 无结果 */}
             {searchTerm.length > 0 && !searchedMessages.length && (
-              <span className="text-gray-600">没有找到对应消息!</span>
+              <div className="text-gray-600 text-center">没有找到对应消息!</div>
             )}
             {/* 有结果 */}
             <div className="h-full flex flex-col gap-4">
               {searchedMessages.map((item) => (
-                <div className="bg-green-900 text-gray-300 rounded py-2 px-3 flex flex-col">
+                <div key={item._id} className="bg-green-900 text-gray-300 rounded-lg py-2 px-3 flex flex-col">
                   {/* time */}
                   <span>
                     {dateFormat(item.createdAt, "YYYY-MM-DD HH:mm:ss")}

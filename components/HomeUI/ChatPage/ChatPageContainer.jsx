@@ -1,5 +1,5 @@
 "use client";
-import { useStateProvider } from "@/components/Context/StateContext";
+import { useStateProvider } from "@/utils/Context/StateContext";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -7,13 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   AiFillCaretRight,
   AiFillCaretLeft,
-  AiFillPlayCircle,
 } from "react-icons/ai";
-import dynamic from "next/dynamic";
-const AudioVisualizer = dynamic(
-  () => import("../../ChatLogic/AudioVisualizer"),
-  { ssr: false }
-);
+
 
 const ChatPageContainer = () => {
   const { data: session } = useSession();
@@ -32,30 +27,34 @@ const ChatPageContainer = () => {
 
   const [isPlayIndex, setIsPlayIndex] = useState(null);
   const [isPlay, setIsPlay] = useState(false);
-  const [allTime, setAllTime] = useState(0)
+  const [allTime, setAllTime] = useState(0);
 
   const handlePlay = (index) => {
     const audioEl = document.getElementById(`audio${index}`);
-    const allTimeCurrent = audioEl.duration
+    const allTimeCurrent = audioEl.duration;
     // Infinity NaN 也是数字类型, 所以要避免显示它们的字符串, 而是显示真正的数字
     // 目前还是由bug待解决
-    if(typeof allTimeCurrent === 'number' && allTimeCurrent.toString() !== 'Infinity' && allTimeCurrent.toString() !== 'NaN') {
-      setAllTime(allTimeCurrent)
+    if (
+      typeof allTimeCurrent === "number" &&
+      allTimeCurrent.toString() !== "Infinity" &&
+      allTimeCurrent.toString() !== "NaN"
+    ) {
+      setAllTime(allTimeCurrent);
     }
 
     setIsPlayIndex(index);
-    setIsPlay(preState => (!preState))
-    
-    if(!isPlay) {
+    setIsPlay((preState) => !preState);
+
+    if (!isPlay) {
       audioEl.play();
     } else {
-      audioEl.pause()
+      audioEl.pause();
     }
-    
+
     // 监听播放结束
-    audioEl.addEventListener('ended', () => {
-      setIsPlayIndex(null)
-      setIsPlay(false)
+    audioEl.addEventListener("ended", () => {
+      setIsPlayIndex(null);
+      setIsPlay(false);
     });
   };
 
@@ -132,7 +131,11 @@ const ChatPageContainer = () => {
                     onClick={() => handlePlay(index)}
                     className={`bg-green-600 flex px-2 pt-[10px] pb-2 justify-center items-center rounded `}
                   >
-                    <div className={`load_11 ${(isPlayIndex===index && isPlay)?'audioPlay': ''}`}>
+                    <div
+                      className={`load_11 ${
+                        isPlayIndex === index && isPlay ? "audioPlay" : ""
+                      }`}
+                    >
                       <div className="rect1"></div>
                       <div className="rect2"></div>
                       <div className="rect3"></div>
@@ -141,7 +144,9 @@ const ChatPageContainer = () => {
                     </div>
                   </div>
                   <AiFillCaretRight className=" text-green-600 ml-[-5px]" />
-                  <span className="text-green-600">{(isPlayIndex===index && isPlay) && allTime+'s'}</span>
+                  <span className="text-green-600">
+                    {isPlayIndex === index && isPlay && allTime + "s"}
+                  </span>
                 </div>
               )}
 

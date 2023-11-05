@@ -127,3 +127,10 @@
     -webkit-transform: scaleY(1.2);
   }
 }
+
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

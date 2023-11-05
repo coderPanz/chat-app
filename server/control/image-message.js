@@ -1,4 +1,5 @@
 const Message = require("../models/message");
+const User = require('../models/user')
 const connectToDB = require("../utils/connect-database/connect-database");
 const path = require("path");
 const { renameSync } = require("fs");
@@ -24,6 +25,16 @@ const uploadImg = async (req, res) => {
           receiver: toId,
           type: "image",
         });
+
+        // 把消息_id保存到用户的收发消息列表中
+        const userFrom = await User.findById(fromId);
+        const userTo = await User.findById(toId);
+
+        userFrom.sentMessages.push(message._id);
+        await userFrom.save();
+        userTo.recievedMessages.push(message._id);
+        await userTo.save();
+
         return res.status(201).json({ message });
       } else {
         return res.status(400).send("找不到发送者和接收者!");

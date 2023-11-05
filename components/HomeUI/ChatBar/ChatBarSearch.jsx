@@ -3,6 +3,8 @@ const ChatBarSearch = () => {
   return (
     <div className="flex justify-center items-center pl-3 pr-4 my-4">
       <input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         type="text"
         className="w-full bg-dropdown-background-hover rounded-l-md h-[32px] px-3 py-1 focus:outline-none"
       />

@@ -2,11 +2,11 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import { SENT_AUDIO_MESSAGE } from "@/utils/API-Route";
-import { useStateProvider } from "@/components/Context/StateContext";
-import { reducerCases } from "@/components/Context/constants";
+import { useStateProvider } from "@/utils/Context/StateContext";
+import { reducerCases } from "@/utils/Context/constants";
 
 const AudioVisualizer = ({ isMousedown, session, createNewChat }) => {
-  const [{socket}, dispatch] = useStateProvider()
+  const [{ socket }, dispatch] = useStateProvider();
   let canvasRef = useRef(null);
   let streamRef = useRef(null);
   let mediaRecorderRef = useRef(null);
@@ -103,7 +103,7 @@ const AudioVisualizer = ({ isMousedown, session, createNewChat }) => {
     mediaRecorder.onstop = () => {
       const audioBlob = new Blob(chunks, { type: "audio/mp3" });
       // 上传数据
-      uploadAudio(audioBlob)
+      uploadAudio(audioBlob);
     };
   };
 

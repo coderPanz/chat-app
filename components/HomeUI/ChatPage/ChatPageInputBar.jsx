@@ -4,16 +4,19 @@ import { BsLink45Deg } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useStateProvider } from "@/components/Context/StateContext";
+import { useStateProvider } from "@/utils/Context/StateContext";
 import { SENT_TEXT_MESSAGE, SENT_IMG_MESSAGE } from "@/utils/API-Route";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
-import { reducerCases } from "@/components/Context/constants";
+import { reducerCases } from "@/utils/Context/constants";
 import { AiFillAudio } from "react-icons/ai";
 
 // 使用延迟加载禁用服务端渲染(因为该组件使用到浏览器api)
-import dynamic from 'next/dynamic'
-const AudioVisualizer = dynamic(() => import('../../ChatLogic/AudioVisualizer'), { ssr: false })
+import dynamic from "next/dynamic";
+const AudioVisualizer = dynamic(
+  () => import("../../ChatLogic/AudioVisualizer"),
+  { ssr: false }
+);
 
 const ChatPageInputBar = () => {
   // 获取当前用户登录的数据
@@ -177,9 +180,11 @@ const ChatPageInputBar = () => {
         <div className="grow mx-5">
           <button
             id="audioInput"
-            className={`${isMousedown?'bg-gray-700': 'bg-gray-600'} text-gray-300 w-full py-2 rounded-md`}
+            className={`${
+              isMousedown ? "bg-gray-700" : "bg-gray-600"
+            } text-gray-300 w-full py-2 rounded-md`}
           >
-            {isMousedown? '松开发送': '按住说话'}
+            {isMousedown ? "松开发送" : "按住说话"}
           </button>
         </div>
       ) : (
@@ -195,13 +200,13 @@ const ChatPageInputBar = () => {
 
       {/* 按下说话时弹出语音输入界面 */}
       {/* 语音输入效果 */}
-      <div className={isMousedown ? '': 'hidden'}>
+      <div className={isMousedown ? "" : "hidden"}>
         <div className="absolute left-1/2 -translate-x-1/2 bottom-[100px] flex gap-7">
           <div className="h-[80px] w-[180px] rounded-lg flex justify-center items-center">
-            <AudioVisualizer 
-            isMousedown={isMousedown} 
-            session={session}
-            createNewChat={createNewChat}
+            <AudioVisualizer
+              isMousedown={isMousedown}
+              session={session}
+              createNewChat={createNewChat}
             />
           </div>
           {/* 取消发送 */}
@@ -210,7 +215,6 @@ const ChatPageInputBar = () => {
           </div>
         </div>
       </div>
-
 
       {/* 右侧语音图标 */}
       <div className="mr-3 cursor-pointer" onClick={handleAudioInput}>

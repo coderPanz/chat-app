@@ -6,7 +6,7 @@ const ChatBar = () => {
       {/* 头部 */}
       <ChatBarHeader />
       {/* 搜索框 */}
-      <ChatBarSearch />
+      {/* <ChatBarSearch /> */}
       {/* 内容列表 */}
       <ChatBarContainer />
     </div>
