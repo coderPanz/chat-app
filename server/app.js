@@ -28,13 +28,58 @@ const io = new Server(server, {
 // 记录实时在线用户
 let onlineUsers = new Map()
 io.on("connection", async (socket) => {
+  global.chatSocket = socket
   // 用户上线后保存用户id和socketid
   socket.on("add-user", (userId) => {
-    // onlineUsers.set(userId, socket.id)
+    onlineUsers.set(userId, socket.id)
   });
   
   // 监听好友发送的消息到指定的房间发送消息
   socket.on("send-msg", (data) => {
-    io.emit("msg-recieve", data)
+    const sendUserSocket = onlineUsers.get(data.toId)
+    if(sendUserSocket) {
+      socket.to(sendUserSocket).emit('msg-recieve', {
+        fromId: data.fromId,
+        message: data.message
+      })
+    }
   });
+
+  // 
+  socket.on('outgoing-voice-call', (data) => {
+    const sendUserSocket = onlineUsers.get(data.toId)
+    socket.to(sendUserSocket).emit('incoming-voice-call', {
+      from: data.from,
+      roomId: data.roomId,
+      callType: data.callType
+    })
+  })
+
+  socket.on('outgoing-video-call', (data) => {
+    const sendUserSocket = onlineUsers.get(data.toId)
+    socket.to(sendUserSocket).emit('incoming-video-call', {
+      from: data.from,
+      roomId: data.roomId,
+      callType: data.callType
+    })
+  })
+
+  socket.on('reject-video-call', (data) => {
+    const sendUserSocket = onlineUsers.get(data.fromId)
+    if(sendUserSocket) {
+      socket.to(sendUserSocket).emit('video-call-rejected')
+    }
+  })
+
+  socket.on('reject-voice-call', (data) => {
+    const sendUserSocket = onlineUsers.get(data.fromId)
+    if(sendUserSocket) {
+      socket.to(sendUserSocket).emit('voice-call-rejected')
+    }
+  })
+
+  socket.on('accept-incoming-call', (id) => {
+    const sendUserSocket = onlineUsers.get(id)
+    socket.to(sendUserSocket).emit('accept-call')
+  })
 });

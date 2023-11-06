@@ -25,7 +25,7 @@ const ChatBarContainer = () => {
 
   return (
     // 聊天栏容器, 用于显示用户列表和消息列表的切换!
-    <div className="bg-search-input-container-background flex-auto custom-scrollbar overflow-auto px-3 h-full">
+    <div className="bg-search-input-container-background flex-auto custom-scrollbar overflow-auto p-3 h-full">
       {
         // 确保userList有值的时候才传入userlist组件
         contactsPage && userList ? (

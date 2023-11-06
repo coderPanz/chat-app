@@ -28,3 +28,9 @@ export { default as SearchMessages } from "./ChatLogic/SearchMessages";
 
 // 未进入聊天界面时显示的背景
 export { default as Empty } from "./Empty";
+
+// 通话组件
+export { default as VideoCall } from "./Call/VideoCall";
+export { default as VoiceCall } from "./Call/VoiceCall";
+export { default as InComingVideoCall } from "./Call/InComingVideoCall";
+export { default as InComingVoiceCall } from "./Call/InComingVoiceCall";

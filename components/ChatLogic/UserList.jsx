@@ -12,7 +12,7 @@ const UserList = ({ userList }) => {
       }
       
       {/* 解决滚动到底部时显示不全现象 */}
-      <div className="h-[115px]"></div>
+      <div className="h-[70px]"></div>
     </div>
   )
 }

@@ -1,5 +1,14 @@
 "use client";
-import { ChatPage, ChatBar, Empty, SearchMessages } from "@/components";
+import {
+  ChatPage,
+  ChatBar,
+  Empty,
+  SearchMessages,
+  VoiceCall,
+  VideoCall,
+  InComingVideoCall,
+  InComingVoiceCall
+} from "@/components";
 import { useStateProvider } from "../../utils/Context/StateContext";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -14,7 +23,17 @@ const Main = () => {
 
   const { data: session } = useSession();
   // 若没有创建聊天的话就显示背景图片
-  const [{ createNewChat, messagesSearch }, dispatch] = useStateProvider();
+  const [
+    {
+      createNewChat,
+      messagesSearch,
+      videoCall,
+      voiceCall,
+      inComingVideoCall,
+      inComingVoiceCall,
+    },
+    dispatch,
+  ] = useStateProvider();
   const [messageTemp, setMessageTemp] = useState("");
   // 获取该用户与对应好友的聊天记录(发送和接收)
   useEffect(() => {
@@ -49,43 +68,95 @@ const Main = () => {
 
   // 接收实时消息
   // 只有当不断改变socketEvent, useEffect才能不断进行sockent的消息接收
-  // useEffect(() => {
-  //   if (socket.current && !socketEvent) {
-  //     socket.current.on("msg-recieve", (data) => {
-  //       // 显示实时发出去的消息
-  //       if (messageTemp !== data._id) {
-  //         setMessageTemp(data._id);
-  //         dispatch({
-  //           type: reducerCases.ADD_MESSAGES,
-  //           newMessage: data,
-  //         });
-  //       }
-  //     });
-  //     setSocketEvent(true);
-  //     // setSocketEvent(preState => !preState)
-  //   }
-  //   // return () => setSocketEvent(preState => !preState) // 添加一个清理函数否则重复渲染两次消息(只是重复渲染并不会存入)
-  // }, [socket.current]);
+  useEffect(() => {
+    if (socket.current && !socketEvent) {
+      socket.current.on("msg-recieve", (data) => {
+        // 显示实时发出去的消息
+        if (messageTemp !== data._id) {
+          setMessageTemp(data._id);
+          dispatch({
+            type: reducerCases.ADD_MESSAGES,
+            newMessage: data,
+          });
+        }
+      });
+
+      // 处理通话的socket
+      socket.current.on('incoming-voice-call', ({ from, roomId, callType }) => {
+        dispatch({
+          type: reducerCases.SET_INCOMING_VOICE_CALL,
+          inComingVoiceCall: { ...from, roomId, callType }
+        })
+      })
+
+      socket.current.on('incoming-video-call', ({ from, roomId, callType }) => {
+        dispatch({
+          type: reducerCases.SET_INCOMING_VIDEO_CALL,
+          inComingVideoCall: { ...from, roomId, callType }
+        })
+      })
+
+      socket.current.on('voice-call-rejected', () => {
+        dispatch({
+          type: reducerCases.END_CALL
+        })
+      })
+
+      socket.current.on('video-call-rejected', () => {
+        dispatch({
+          type: reducerCases.END_CALL
+        })
+      })
+
+      socket.current.on('accept-incoming-call', ({id}) => {
+
+      })
+      setSocketEvent(true);
+      // setSocketEvent(preState => !preState)
+    }
+    // return () => setSocketEvent(preState => !preState) // 添加一个清理函数否则重复渲染两次消息(只是重复渲染并不会存入)
+  }, [socket.current]);
 
   return (
-    <div className="h-[100vh] w-[100vw] text-white grid grid-cols-12">
-      <div className="col-span-3">
-        <ChatBar />
-      </div>
-      {/* 当没有进入聊天界面时显示的一个背景 */}
-      {createNewChat ? (
-        <div
-          className={`col-span-9 ${messagesSearch ? "grid grid-cols-2" : ""}`}
-        >
-          <ChatPage />
-          {messagesSearch && <SearchMessages />}
-        </div>
-      ) : (
-        <div className="col-span-9">
-          <Empty />
+    <>
+      {/* 收到的通话组件 */}
+      {inComingVideoCall && <InComingVideoCall />}
+      {inComingVoiceCall && <InComingVoiceCall />}
+      
+      {/* 发起通话组件 */}
+      {voiceCall && (
+        <div className="h-screen w-screen max-h-full overflow-hidden">
+          <VoiceCall />
         </div>
       )}
-    </div>
+      {videoCall && (
+        <div className="h-screen w-screen max-h-full overflow-hidden">
+          <VideoCall />
+        </div>
+      )}
+      {!videoCall && !voiceCall && (
+        <div className="h-[100vh] w-[100vw] text-white grid grid-cols-12">
+          <div className="col-span-3">
+            <ChatBar />
+          </div>
+          {/* 当没有进入聊天界面时显示的一个背景 */}
+          {createNewChat ? (
+            <div
+              className={`col-span-9 ${
+                messagesSearch ? "grid grid-cols-2" : ""
+              }`}
+            >
+              <ChatPage />
+              {messagesSearch && <SearchMessages />}
+            </div>
+          ) : (
+            <div className="col-span-9">
+              <Empty />
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 };
 

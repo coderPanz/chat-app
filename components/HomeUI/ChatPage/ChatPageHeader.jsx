@@ -16,6 +16,31 @@ const ChatPageHeader = () => {
       type: reducerCases.SET_MESSAGE_SEARCH,
     });
   };
+
+  const handleVoiceCall = () => {
+    dispatch({
+      type: reducerCases.SET_VOICE_CALL,
+      voiceCall: {
+        ...createNewChat,
+        type: 'out-going',
+        callType: 'voice',
+        roomId: Date.now()
+      }
+    })
+  }
+
+  const handleVideoCall = () => {
+    dispatch({
+      type: reducerCases.SET_VIDEO_CALL,
+      videoCall: {
+        ...createNewChat,
+        type: 'out-going',
+        callType: 'video',
+        roomId: Date.now()
+      }
+    })
+  }
+
   return (
     <div className="bg-panel-header-background flex justify-between items-center p-3">
       {/* left */}
@@ -34,8 +59,8 @@ const ChatPageHeader = () => {
       </div>
       {/* right */}
       <div className="flex justify-center items-center text-xl gap-3">
-        <MdCall className="text-gray-400 cursor-pointer" />
-        <IoVideocam className="text-gray-400 cursor-pointer" />
+        <MdCall onClick={handleVoiceCall} className="text-gray-400 cursor-pointer" />
+        <IoVideocam onClick={handleVideoCall} className="text-gray-400 cursor-pointer" />
         <BiSearchAlt2
           className="text-gray-400 cursor-pointer"
           onClick={handleSearch}

@@ -6,7 +6,12 @@ export const initialState = {
   messages: undefined, // 全局保存于好友的聊天信息
   socket: undefined,
   messagesSearch: false,
-  userMessageList: []
+  userMessageList: [],
+  // 语音-视频电话相关的变量
+  videoCall: undefined,
+  voiceCall: undefined,
+  inComingVideoCall: undefined,
+  inComingVoiceCall: undefined
 }
 
 // reducer函数: 返回的是更新后的 state
@@ -45,16 +50,46 @@ const reducer = (state, action) => {
         ...state,
         messages: [...state.messages, action.newMessage]
       }
-    // 查找消息
+    // 查找历史聊天记录
     case reducerCases.SET_MESSAGE_SEARCH: 
       return {
         ...state,
         messagesSearch: !state.messagesSearch
       }
+    // 搜索消息列表信息
     case reducerCases.SET_USER_MESSAGE_LIST:
       return {
         ...state,
         userMessageList: action.userMessageList
+      }
+    // 语音-视频电话
+    case reducerCases.SET_VIDEO_CALL:
+      return {
+        ...state,
+        videoCall: action.videoCall
+      }
+    case reducerCases.SET_VOICE_CALL:
+      return {
+        ...state,
+        voiceCall: action.voiceCall
+      }
+    case reducerCases.SET_INCOMING_VIDEO_CALL:
+      return {
+        ...state,
+        inComingVideoCall: action.inComingVideoCall
+      }
+    case reducerCases.SET_INCOMING_VOICE_CALL:
+      return {
+        ...state,
+        inComingVoiceCall: action.inComingVoiceCall
+      }
+    case reducerCases.END_CALL: 
+      return {
+        ...state,
+        videoCall: undefined,
+        voiceCall: undefined,
+        inComingVideoCall: undefined,
+        inComingVoiceCall: undefined,
       }
     default:
       return state;
