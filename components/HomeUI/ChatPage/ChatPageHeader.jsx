@@ -17,6 +17,7 @@ const ChatPageHeader = () => {
     });
   };
 
+  // 发起语音通话
   const handleVoiceCall = () => {
     dispatch({
       type: reducerCases.SET_VOICE_CALL,
@@ -29,6 +30,7 @@ const ChatPageHeader = () => {
     })
   }
 
+  // 发起视频通话
   const handleVideoCall = () => {
     dispatch({
       type: reducerCases.SET_VIDEO_CALL,

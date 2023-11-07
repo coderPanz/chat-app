@@ -7,14 +7,13 @@ const Container = dynamic(() => import("./Container"), { ssr: false })
 
 const VoiceCall = () => {
   const { data: session } = useSession()
-  const userInfos = session?.user
   const [{ voiceCall, socket }] = useStateProvider()
 
   // 发起通话
   useEffect(() => {
     if(voiceCall.type === 'out-going') {
-      socket.current.emit('outgoing-out-call', {
-        to: voiceCall._id,
+      socket.current.emit('outgoing-voice-call', {
+        toId: voiceCall._id,
         from: {
           id: session?.user.id,
           image: session?.user.image,
@@ -25,6 +24,7 @@ const VoiceCall = () => {
       })
     }
   }, [voiceCall])
+  
   return (
     <Container data={voiceCall}/>
   )

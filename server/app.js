@@ -45,7 +45,7 @@ io.on("connection", async (socket) => {
     }
   });
 
-  // 
+  // 通话socket
   socket.on('outgoing-voice-call', (data) => {
     const sendUserSocket = onlineUsers.get(data.toId)
     socket.to(sendUserSocket).emit('incoming-voice-call', {

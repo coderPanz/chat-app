@@ -14,6 +14,15 @@ const Container = ({ data }) => {
 
   // 挂断电话
   const endCall = () => {
+    if(data.callType === 'voice') {
+      socket.current.emit('reject-voice-call', {
+        from: data._id
+      })
+    } else {
+      socket.current.emit('reject-video-call', {
+        from: data._id
+      })
+    }
     dispatch({
       type: reducerCases.END_CALL
     })

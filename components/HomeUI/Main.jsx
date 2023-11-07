@@ -119,6 +119,7 @@ const Main = () => {
 
   return (
     <>
+      {/* 由于是通话的接收方, 当socket监听到来电时设置inComingVideoCall然后渲染来电组件, 之后进入组件可以决定是否接听或者挂断*/}
       {/* 收到的通话组件 */}
       {inComingVideoCall && <InComingVideoCall />}
       {inComingVoiceCall && <InComingVoiceCall />}
