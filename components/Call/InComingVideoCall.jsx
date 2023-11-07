@@ -34,7 +34,7 @@ const InComingVideoCall = () => {
     })
   };
   return (
-    <div className="h-24 w-80 fixed bottom-8 z-50 rounded-sm flex">
+    <div className="fixed bottom-4 right-4">
       <div>
         <Image
           src={inComingVideoCall.image}

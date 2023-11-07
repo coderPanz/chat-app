@@ -15,9 +15,9 @@ const VoiceCall = () => {
       socket.current.emit('outgoing-voice-call', {
         toId: voiceCall._id,
         from: {
-          id: session?.user.id,
+          _id: session?.user.id,
           image: session?.user.image,
-          username: session?.user.username
+          username: session?.user.name
         },
         callType: voiceCall.callType,
         roomId: voiceCall.roomId

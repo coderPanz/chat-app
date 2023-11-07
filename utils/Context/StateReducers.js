@@ -11,7 +11,9 @@ export const initialState = {
   videoCall: undefined,
   voiceCall: undefined,
   inComingVideoCall: undefined,
-  inComingVoiceCall: undefined
+  inComingVoiceCall: undefined,
+  // 是否接听
+  isConnect: false
 }
 
 // reducer函数: 返回的是更新后的 state
@@ -90,6 +92,12 @@ const reducer = (state, action) => {
         voiceCall: undefined,
         inComingVideoCall: undefined,
         inComingVoiceCall: undefined,
+      }
+    // 是否接听
+    case reducerCases.IS_CONNECT:
+      return {
+        ...state,
+        isConnect: !state.isConnect
       }
     default:
       return state;

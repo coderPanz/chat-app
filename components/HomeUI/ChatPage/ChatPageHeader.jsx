@@ -9,7 +9,7 @@ import Image from "next/image";
 const ChatPageHeader = () => {
   // 获取全局状态来回显选择聊天的联系人
   const [{ createNewChat }, dispatch] = useStateProvider();
-
+  
   // 消息搜索
   const handleSearch = () => {
     dispatch({

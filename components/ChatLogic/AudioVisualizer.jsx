@@ -124,18 +124,15 @@ const AudioVisualizer = ({ isMousedown, session, createNewChat }) => {
       },
     });
 
+    const data = res.data.message
     // 发送socket消息
     if (res.status === 201) {
-      socket.current.emit("send-msg", {
-        toId: createNewChat._id,
-        fromId: session?.user.id,
-        message: res.data.message,
-      });
+      socket.current.emit("send-msg", data);
     }
     // 缓存该消息进入本地进行聊天窗口的更新
     dispatch({
       type: reducerCases.ADD_MESSAGES,
-      newMessage: res.data.message,
+      newMessage: data,
     });
   };
 

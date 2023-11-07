@@ -36,14 +36,17 @@ const ChatPageInputBar = () => {
   // 记录鼠标是否已经按下
   const [isMousedown, setIsMousedown] = useState(false);
 
+  // 是否显示表情
   const handleShowEmoji = () => {
     setShowEmojiPicker((preState) => !preState);
   };
 
+  // 发送表情信息
   const handleEmojiMessages = (emoji) => {
     setMessage((preState) => (preState += emoji.emoji));
   };
 
+  // 发送文本信息
   const handleSentMessage = async () => {
     try {
       // 点击前先检查是否输入内容
@@ -105,18 +108,14 @@ const ChatPageInputBar = () => {
     });
 
     // 发送socket消息
+    const data = res.data.message
     if (res.status === 201) {
-      socket.current.emit("send-msg", {
-        toId: createNewChat._id,
-        fromId: session?.user.id,
-        message: res.data.message,
-      });
+      socket.current.emit("send-msg", data);
     }
     // 缓存该消息进入本地进行聊天窗口的更新
     dispatch({
       type: reducerCases.ADD_MESSAGES,
-      newMessage: res.data.message,
-      // fromSelf: true
+      newMessage: data
     });
   };
 

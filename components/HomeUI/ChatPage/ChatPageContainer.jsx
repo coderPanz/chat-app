@@ -94,6 +94,37 @@ const ChatPageContainer = () => {
                   className="w-auto h-[200px] rounded-lg"
                 />
               )}
+
+              {/* 音频消息 */}
+              {item.type === "audio" && (
+                <div className="flex justify-center items-center">
+                  <audio
+                    id={`audio${index}`}
+                    src={`/uploads/audios/${item.message}`}
+                  ></audio>
+                  <div
+                    id={`audio${index}`}
+                    onClick={() => handlePlay(index)}
+                    className={`bg-green-600 flex px-2 pt-[10px] pb-2 justify-center items-center rounded `}
+                  >
+                    <div
+                      className={`load_11 ${
+                        isPlayIndex === index && isPlay ? "audioPlay" : ""
+                      }`}
+                    >
+                      <div className="rect1"></div>
+                      <div className="rect2"></div>
+                      <div className="rect3"></div>
+                      <div className="rect4"></div>
+                      <div className="rect5"></div>
+                    </div>
+                  </div>
+                  <AiFillCaretRight className=" text-green-600 ml-[-5px]" />
+                  <span className="text-green-600">
+                    {isPlayIndex === index && isPlay && allTime + "s"}
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
             <div

@@ -35,6 +35,7 @@ const Main = () => {
     dispatch,
   ] = useStateProvider();
   const [messageTemp, setMessageTemp] = useState("");
+
   // 获取该用户与对应好友的聊天记录(发送和接收)
   useEffect(() => {
     const getMessage = async () => {
@@ -49,9 +50,7 @@ const Main = () => {
     };
 
     if (createNewChat?._id) {
-      getMessage();
-      // 当进入与某个好友的聊天界面后发出事件让socket创建一个房间实现私聊
-      socket.current.emit("joinRoom", createNewChat?._id);
+      getMessage()
     }
   }, [createNewChat]);
 
@@ -70,7 +69,7 @@ const Main = () => {
   // 只有当不断改变socketEvent, useEffect才能不断进行sockent的消息接收
   useEffect(() => {
     if (socket.current && !socketEvent) {
-      socket.current.on("msg-recieve", (data) => {
+      socket.current.on('msg-recieve', (data) => {
         // 显示实时发出去的消息
         if (messageTemp !== data._id) {
           setMessageTemp(data._id);
@@ -108,9 +107,12 @@ const Main = () => {
         })
       })
 
-      socket.current.on('accept-incoming-call', ({id}) => {
-
+      socket.current.on('accept-voice-call', () => {
+        dispatch({
+          type: reducerCases.IS_CONNECT
+        })
       })
+
       setSocketEvent(true);
       // setSocketEvent(preState => !preState)
     }
@@ -118,7 +120,7 @@ const Main = () => {
   }, [socket.current]);
 
   return (
-    <>
+    <div>
       {/* 由于是通话的接收方, 当socket监听到来电时设置inComingVideoCall然后渲染来电组件, 之后进入组件可以决定是否接听或者挂断*/}
       {/* 收到的通话组件 */}
       {inComingVideoCall && <InComingVideoCall />}
@@ -157,7 +159,7 @@ const Main = () => {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

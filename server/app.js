@@ -26,24 +26,21 @@ const io = new Server(server, {
 });
 
 // 记录实时在线用户
-let onlineUsers = new Map()
+global.onlineUsers = new Map()
 io.on("connection", async (socket) => {
   global.chatSocket = socket
   // 用户上线后保存用户id和socketid
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id)
   });
-  
+
   // 监听好友发送的消息到指定的房间发送消息
   socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.toId)
+    const sendUserSocket = onlineUsers.get(data.receiver)
     if(sendUserSocket) {
-      socket.to(sendUserSocket).emit('msg-recieve', {
-        fromId: data.fromId,
-        message: data.message
-      })
+      socket.to(sendUserSocket).emit('msg-recieve', {...data})
     }
-  });
+  })
 
   // 通话socket
   socket.on('outgoing-voice-call', (data) => {
@@ -78,8 +75,8 @@ io.on("connection", async (socket) => {
     }
   })
 
-  socket.on('accept-incoming-call', (id) => {
-    const sendUserSocket = onlineUsers.get(id)
-    socket.to(sendUserSocket).emit('accept-call')
+  socket.on('accept-voice-call', (data) => {
+    const sendUserSocket = onlineUsers.get(data._id)
+    socket.to(sendUserSocket).emit('accept-voice-call')
   })
 });
