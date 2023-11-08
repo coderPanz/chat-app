@@ -64,19 +64,24 @@ io.on("connection", async (socket) => {
   socket.on('reject-video-call', (data) => {
     const sendUserSocket = onlineUsers.get(data.fromId)
     if(sendUserSocket) {
-      socket.to(sendUserSocket).emit('video-call-rejected')
+      socket.to(sendUserSocket).emit('video-call-rejected', data)
     }
   })
 
   socket.on('reject-voice-call', (data) => {
     const sendUserSocket = onlineUsers.get(data.fromId)
     if(sendUserSocket) {
-      socket.to(sendUserSocket).emit('voice-call-rejected')
+      socket.to(sendUserSocket).emit('voice-call-rejected', data)
     }
   })
 
   socket.on('accept-voice-call', (data) => {
     const sendUserSocket = onlineUsers.get(data._id)
-    socket.to(sendUserSocket).emit('accept-voice-call')
+    socket.to(sendUserSocket).emit('voice-call-accepted')
+  })
+
+  socket.on('accept-video-call', (data) => {
+    const sendUserSocket = onlineUsers.get(data._id)
+    socket.to(sendUserSocket).emit('video-call-accepted')
   })
 });

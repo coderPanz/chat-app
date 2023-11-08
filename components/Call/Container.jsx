@@ -8,19 +8,26 @@ const Container = ({ data }) => {
   const [{ socket, isConnect }, dispatch] = useStateProvider()
 
   // 挂断电话
+  // 挂断电话需要设置!isConnect
   const endCall = () => {
     if(data.callType === 'voice') {
       socket.current.emit('reject-voice-call', {
-        fromId: data._id
+        fromId: data._id,
+        isEnd: true // 表示类型为--挂断电话
       })
       dispatch({
         type: reducerCases.IS_CONNECT
       })
     } else {
       socket.current.emit('reject-video-call', {
-        from: data._id
+        fromId: data._id,
+        isEnd: true
+      })
+      dispatch({
+        type: reducerCases.IS_CONNECT
       })
     }
+    // 挂断电话所有通话相关状态重置
     dispatch({
       type: reducerCases.END_CALL
     })

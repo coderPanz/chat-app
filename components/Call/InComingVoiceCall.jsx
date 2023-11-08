@@ -25,10 +25,12 @@ const InComingVoiceCall = () => {
     })
   };
 
-  // 挂断电话
+  // 拒接电话(需要一个标识符表示拒接还是挂断)
+  // 拒接电话不需要设置!isConnect
   const rejectCall = () => {
     socket.current.emit("reject-voice-call", {
       fromId: inComingVoiceCall._id,
+      isEnd: false // 表示类型为--拒接电话
     });
     dispatch({
       type: reducerCases.END_CALL,

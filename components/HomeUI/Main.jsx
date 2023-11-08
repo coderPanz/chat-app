@@ -95,19 +95,37 @@ const Main = () => {
         })
       })
 
-      socket.current.on('voice-call-rejected', () => {
+      socket.current.on('voice-call-rejected', (data) => {
         dispatch({
           type: reducerCases.END_CALL
         })
+        // 若类型为挂断电话才需要改变通话状态
+        if(data.isEnd) {
+          dispatch({
+            type: reducerCases.IS_CONNECT
+          })
+        }
       })
 
-      socket.current.on('video-call-rejected', () => {
+      socket.current.on('video-call-rejected', (data) => {
         dispatch({
           type: reducerCases.END_CALL
         })
+
+        if(data.isEnd) {
+          dispatch({
+            type: reducerCases.IS_CONNECT
+          })
+        }
       })
 
-      socket.current.on('accept-voice-call', () => {
+      socket.current.on('voice-call-accepted', () => {
+        dispatch({
+          type: reducerCases.IS_CONNECT
+        })
+      })
+
+      socket.current.on('video-call-accepted', () => {
         dispatch({
           type: reducerCases.IS_CONNECT
         })

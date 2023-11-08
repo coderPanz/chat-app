@@ -1,8 +1,8 @@
 "use client"
-import { useEffect } from "react"
 import { useStateProvider } from "@/utils/Context/StateContext"
 import { useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
+import { useEffect } from "react"
 const Container = dynamic(() => import("./Container"), { ssr: false })
 
 const VideoCall = () => {
@@ -13,21 +13,20 @@ const VideoCall = () => {
   useEffect(() => {
     if(videoCall.type === 'out-going') {
       socket.current.emit('outgoing-video-call', {
-        to: videoCall._id,
+        toId: videoCall._id,
         from: {
-          id: session?.user.id,
+          _id: session?.user.id,
           image: session?.user.image,
-          username: session?.user.username
+          username: session?.user.name
         },
         callType: videoCall.callType,
         roomId: videoCall.roomId
       })
     }
   }, [videoCall])
-
+  
   return (
     <Container data={videoCall}/>
   )
 }
-
 export default VideoCall
