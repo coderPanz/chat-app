@@ -52,7 +52,7 @@ const SearchMessages = () => {
         <div>
           {/* 搜索提示 */}
           <div className=" text-gray-600 text-center">
-            {!searchTerm.length && `搜索与${createNewChat.username}相关的邮件`}
+            {!searchTerm.length && `搜索与${createNewChat.username}相关的消息!`}
           </div>
           {/* 搜索结果 */}
           <div className="flex flex-col px-3">
