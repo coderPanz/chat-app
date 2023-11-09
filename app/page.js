@@ -2,7 +2,10 @@
 import { useRouter } from 'next/navigation'
 import { useSession } from "next-auth/react"
 import { useEffect } from 'react'
-import { Main } from '@/components'
+import dynamic from 'next/dynamic'
+const Main = dynamic(() => import('../components/HomeUI/Main'))
+// import { Main } from '@/components'
+
 
 export default function Home() {
   const { data: session } = useSession()

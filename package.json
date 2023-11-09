@@ -13,7 +13,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "emoji-picker-react": "^4.5.5",
-    "express-generator": "^4.16.1",
+    "express-generator": "^4.2.0",
     "mongodb": "^6.1.0",
     "mongoose": "^7.6.1",
     "music-metadata": "^7.13.5",
@@ -23,7 +23,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.11.0",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "zego-express-engine-webrtc": "^2.26.2"
   },
   "devDependencies": {
     "autoprefixer": "^10",

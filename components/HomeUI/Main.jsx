@@ -7,7 +7,7 @@ import {
   VoiceCall,
   VideoCall,
   InComingVideoCall,
-  InComingVoiceCall
+  InComingVoiceCall,
 } from "@/components";
 import { useStateProvider } from "../../utils/Context/StateContext";
 import { useEffect, useRef, useState } from "react";
@@ -50,26 +50,36 @@ const Main = () => {
     };
 
     if (createNewChat?._id) {
-      getMessage()
+      getMessage();
     }
   }, [createNewChat]);
-
   // 当用户登录连接socket服务器并设置全局socket状态以便其他地方访问
+
   useEffect(() => {
-    if (session?.user) {
-      socket.current = io(SOCKETURL);
-      // 派发一个add-user增加用户的事件
-      socket.current.emit("add-user", session?.user.id);
-      // 全局保存socket
-      dispatch({ type: reducerCases.SET_SOCKET, socket });
-    }
+    socket.current = io(SOCKETURL);
+    // 全局保存socket
+    dispatch({ type: reducerCases.SET_SOCKET, socket });
+    socket.current.emit("add-user", session?.user.id.toString());
+    // socket.current.emit("add-user", session?.user.id.toString());
+    // socket.current.emit("add-user", session?.user.id.toString());
+    // 因为socket通信时基于socket.id和用户的映射关系来进行的, 当用户登录有并在客户端切换不同程序界面有回到该应用时, useEffect会重新渲染导致同一个用户重复发送add-user事件导致后端的socket.id发送变化, 最终导致socket.id与同一个用户的映射关系发送变化会导致私聊的即时通讯发生问题.所以需要浏览器缓存这个用户数据, 若其没有变化则不会重复发出"add-user"事件
+    // 派发一个add-user增加用户的事件
+    // if(!localStorage.getItem(session?.user.id.toString())) {
+    //   console.log('first')
+    //   localStorage.setItem(session?.user.id.toString(), session?.user.id.toString())
+    //   socket.current.emit("add-user", session?.user.id.toString());
+    // }
   }, [session?.user]);
 
   // 接收实时消息
   // 只有当不断改变socketEvent, useEffect才能不断进行sockent的消息接收
   useEffect(() => {
     if (socket.current && !socketEvent) {
-      socket.current.on('msg-recieve', (data) => {
+      console.log(socket.current);
+      console.log(socketEvent);
+      socket.current.on("msg-recieve", (data) => {
+        console.log(data);
+        console.log("first");
         // 显示实时发出去的消息
         if (messageTemp !== data._id) {
           setMessageTemp(data._id);
@@ -81,60 +91,57 @@ const Main = () => {
       });
 
       // 处理通话的socket
-      socket.current.on('incoming-voice-call', ({ from, roomId, callType }) => {
+      socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
         dispatch({
           type: reducerCases.SET_INCOMING_VOICE_CALL,
-          inComingVoiceCall: { ...from, roomId, callType }
-        })
-      })
+          inComingVoiceCall: { ...from, roomId, callType },
+        });
+      });
 
-      socket.current.on('incoming-video-call', ({ from, roomId, callType }) => {
+      socket.current.on("incoming-video-call", ({ from, roomId, callType }) => {
         dispatch({
           type: reducerCases.SET_INCOMING_VIDEO_CALL,
-          inComingVideoCall: { ...from, roomId, callType }
-        })
-      })
+          inComingVideoCall: { ...from, roomId, callType },
+        });
+      });
 
-      socket.current.on('voice-call-rejected', (data) => {
+      socket.current.on("voice-call-rejected", (data) => {
         dispatch({
-          type: reducerCases.END_CALL
-        })
+          type: reducerCases.END_CALL,
+        });
         // 若类型为挂断电话才需要改变通话状态
-        if(data.isEnd) {
+        if (data.isEnd) {
           dispatch({
-            type: reducerCases.IS_CONNECT
-          })
+            type: reducerCases.IS_CONNECT,
+          });
         }
-      })
+      });
 
-      socket.current.on('video-call-rejected', (data) => {
+      socket.current.on("video-call-rejected", (data) => {
         dispatch({
-          type: reducerCases.END_CALL
-        })
+          type: reducerCases.END_CALL,
+        });
 
-        if(data.isEnd) {
+        if (data.isEnd) {
           dispatch({
-            type: reducerCases.IS_CONNECT
-          })
+            type: reducerCases.IS_CONNECT,
+          });
         }
-      })
+      });
 
-      socket.current.on('voice-call-accepted', () => {
+      socket.current.on("voice-call-accepted", () => {
         dispatch({
-          type: reducerCases.IS_CONNECT
-        })
-      })
+          type: reducerCases.IS_CONNECT,
+        });
+      });
 
-      socket.current.on('video-call-accepted', () => {
+      socket.current.on("video-call-accepted", () => {
         dispatch({
-          type: reducerCases.IS_CONNECT
-        })
-      })
-
+          type: reducerCases.IS_CONNECT,
+        });
+      });
       setSocketEvent(true);
-      // setSocketEvent(preState => !preState)
     }
-    // return () => setSocketEvent(preState => !preState) // 添加一个清理函数否则重复渲染两次消息(只是重复渲染并不会存入)
   }, [socket.current]);
 
   return (
@@ -143,7 +150,7 @@ const Main = () => {
       {/* 收到的通话组件 */}
       {inComingVideoCall && <InComingVideoCall />}
       {inComingVoiceCall && <InComingVoiceCall />}
-      
+
       {/* 发起通话组件 */}
       {voiceCall && (
         <div className="h-screen w-screen max-h-full overflow-hidden">

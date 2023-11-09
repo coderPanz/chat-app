@@ -26,18 +26,20 @@ const io = new Server(server, {
 });
 
 // 记录实时在线用户
-global.onlineUsers = new Map()
+const onlineUsers = new Map();
+
 io.on("connection", async (socket) => {
-  global.chatSocket = socket
-  // 用户上线后保存用户id和socketid
+  // 用户上线后保存 socket.id 建立用户与 socket.id 的映射关系
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id)
+    console.log(onlineUsers)
   });
 
   // 监听好友发送的消息到指定的房间发送消息
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.receiver)
     if(sendUserSocket) {
+      console.log(sendUserSocket)
       socket.to(sendUserSocket).emit('msg-recieve', {...data})
     }
   })

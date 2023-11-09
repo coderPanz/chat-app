@@ -13,7 +13,7 @@ export const initialState = {
   inComingVideoCall: undefined,
   inComingVoiceCall: undefined,
   // 是否接听
-  isConnect: false
+  isConnect: false,
 }
 
 // reducer函数: 返回的是更新后的 state

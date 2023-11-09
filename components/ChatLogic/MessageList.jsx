@@ -11,7 +11,7 @@ import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
 const MessageList = () => {
   const { data: session } = useSession();
   const [{ userMessageList, messages }, dispatch] = useStateProvider();
-  console.log(userMessageList);
+
   // 获取消息列表
   useEffect(() => {
     const getContacts = async () => {
@@ -59,8 +59,6 @@ const MessageList = () => {
     }
   }, [searchTerm]);
 
-  // 渲染列表时, 把消息对应的用户id存起来, 每次渲染消息先判断是否已经渲染过同一个用户的消息, 防止重复渲染
-  let renderMessages = [];
   return (
     <div>
       {/* 消息搜索框 */}
@@ -81,11 +79,6 @@ const MessageList = () => {
         // 先判断是发送消息还是接收消息
         const isSentMessage = item.sender._id === session?.user.id;
         const isReceiveMessage = item.receiver._id === session?.user.id;
-        // 在判断是否已经渲染过该用户的消息, 防止重复渲染
-        // 判断一个对象是否已经存在于一个对象数组中
-        // let isRender = renderMessages.find((msg) => msg._id === item._id);
-        // 当没有渲染时保存到renderMessages
-        // if (!isRender) renderMessages.push(item);
         return (
           <>
             {/* 当搜索框没有输入的时候正常显示消息列表， 一旦开始输入时就显示搜索结果 */}
