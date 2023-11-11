@@ -24,7 +24,7 @@
     "react-dom": "^18",
     "react-icons": "^4.11.0",
     "socket.io-client": "^4.7.2",
-    "zego-express-engine-webrtc": "^2.26.2"
+    "zego-express-engine-webrtc": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10",

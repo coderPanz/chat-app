@@ -22,6 +22,8 @@ const Main = () => {
   const [socketEvent, setSocketEvent] = useState(false);
 
   const { data: session } = useSession();
+
+  const [ isAddUser, setIsAddUser ] = useState(false)
   // 若没有创建聊天的话就显示背景图片
   const [
     {
@@ -56,10 +58,14 @@ const Main = () => {
   // 当用户登录连接socket服务器并设置全局socket状态以便其他地方访问
 
   useEffect(() => {
-    socket.current = io(SOCKETURL);
-    // 全局保存socket
-    dispatch({ type: reducerCases.SET_SOCKET, socket });
-    socket.current.emit("add-user", session?.user.id.toString());
+    if(!isAddUser) {
+      socket.current = io(SOCKETURL);
+      // 全局保存socket
+      console.log('增加用户')
+      dispatch({ type: reducerCases.SET_SOCKET, socket });
+      socket.current.emit("add-user", session?.user.id.toString());
+    }
+    setIsAddUser(true)
     // socket.current.emit("add-user", session?.user.id.toString());
     // socket.current.emit("add-user", session?.user.id.toString());
     // 因为socket通信时基于socket.id和用户的映射关系来进行的, 当用户登录有并在客户端切换不同程序界面有回到该应用时, useEffect会重新渲染导致同一个用户重复发送add-user事件导致后端的socket.id发送变化, 最终导致socket.id与同一个用户的映射关系发送变化会导致私聊的即时通讯发生问题.所以需要浏览器缓存这个用户数据, 若其没有变化则不会重复发出"add-user"事件
@@ -75,11 +81,7 @@ const Main = () => {
   // 只有当不断改变socketEvent, useEffect才能不断进行sockent的消息接收
   useEffect(() => {
     if (socket.current && !socketEvent) {
-      console.log(socket.current);
-      console.log(socketEvent);
       socket.current.on("msg-recieve", (data) => {
-        console.log(data);
-        console.log("first");
         // 显示实时发出去的消息
         if (messageTemp !== data._id) {
           setMessageTemp(data._id);
@@ -109,6 +111,7 @@ const Main = () => {
         dispatch({
           type: reducerCases.END_CALL,
         });
+
         // 若类型为挂断电话才需要改变通话状态
         if (data.isEnd) {
           dispatch({
