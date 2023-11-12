@@ -23,7 +23,8 @@ const Main = () => {
 
   const { data: session } = useSession();
 
-  const [ isAddUser, setIsAddUser ] = useState(false)
+  const [isAddUser, setIsAddUser] = useState(false);
+
   // 若没有创建聊天的话就显示背景图片
   const [
     {
@@ -36,6 +37,7 @@ const Main = () => {
     },
     dispatch,
   ] = useStateProvider();
+
   const [messageTemp, setMessageTemp] = useState("");
 
   // 获取该用户与对应好友的聊天记录(发送和接收)
@@ -58,23 +60,15 @@ const Main = () => {
   // 当用户登录连接socket服务器并设置全局socket状态以便其他地方访问
 
   useEffect(() => {
-    if(!isAddUser) {
+    // 加上if判断后虽然组件还是会渲染两次, 但是可以修复sokect.io程序切换到其他页面在返回时收不到即时消息的问题
+    if (!isAddUser) {
       socket.current = io(SOCKETURL);
       // 全局保存socket
-      console.log('增加用户')
+      console.log("增加用户");
       dispatch({ type: reducerCases.SET_SOCKET, socket });
       socket.current.emit("add-user", session?.user.id.toString());
     }
-    setIsAddUser(true)
-    // socket.current.emit("add-user", session?.user.id.toString());
-    // socket.current.emit("add-user", session?.user.id.toString());
-    // 因为socket通信时基于socket.id和用户的映射关系来进行的, 当用户登录有并在客户端切换不同程序界面有回到该应用时, useEffect会重新渲染导致同一个用户重复发送add-user事件导致后端的socket.id发送变化, 最终导致socket.id与同一个用户的映射关系发送变化会导致私聊的即时通讯发生问题.所以需要浏览器缓存这个用户数据, 若其没有变化则不会重复发出"add-user"事件
-    // 派发一个add-user增加用户的事件
-    // if(!localStorage.getItem(session?.user.id.toString())) {
-    //   console.log('first')
-    //   localStorage.setItem(session?.user.id.toString(), session?.user.id.toString())
-    //   socket.current.emit("add-user", session?.user.id.toString());
-    // }
+    setIsAddUser(true);
   }, [session?.user]);
 
   // 接收实时消息
@@ -143,6 +137,15 @@ const Main = () => {
           type: reducerCases.IS_CONNECT,
         });
       });
+
+      // 监听在线用户
+      socket.current.on("online-users", ({ onlineUsers }) => {
+        dispatch({
+          type: reducerCases.ONLINE_USERS,
+          onlineUsers
+        })
+      });
+
       setSocketEvent(true);
     }
   }, [socket.current]);

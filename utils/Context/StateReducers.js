@@ -14,6 +14,7 @@ export const initialState = {
   inComingVoiceCall: undefined,
   // 是否接听
   isConnect: false,
+  onlineUsers: []
 }
 
 // reducer函数: 返回的是更新后的 state
@@ -98,6 +99,23 @@ const reducer = (state, action) => {
       return {
         ...state,
         isConnect: !state.isConnect
+      }
+    // 添加在线用户
+    case reducerCases.ONLINE_USERS:
+      return {
+        ...state,
+        onlineUsers: action.onlineUsers
+      }
+    // 删除在线用户
+    case reducerCases.DEL_ONLINE_USER:
+      return {
+        ...state,
+        onlineUsers: state.onlineUsers.filter(item => item !== action.offlineUser)
+      }
+    case reducerCases.EXIT_CHAT:
+      return {
+        ...state,
+        createNewChat: undefined
       }
     default:
       return state;

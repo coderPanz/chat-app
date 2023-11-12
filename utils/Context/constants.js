@@ -14,4 +14,10 @@ export const reducerCases = {
   END_CALL: "END CALL",
   // 是否接听
   IS_CONNECT: "IS_CONNECT",
+  // 保存在线用户
+  ONLINE_USERS: "ONLINE_USERS",
+  // 删除在线用户
+  DEL_ONLINE_USER: "DEL_ONLINE_USER",
+  // 退出聊天界面
+  EXIT_CHAT: "EXIT_CHAT"
 }

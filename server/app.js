@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { Server } = require("socket.io");
 const uploadRoute = require("./route/index.js");
+const { on } = require("./models/message.js");
 
 const app = express();
 app.use(cors());
@@ -32,6 +33,18 @@ io.on("connection", async (socket) => {
   // 用户上线后保存 socket.id 建立用户与 socket.id 的映射关系
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
+    // 广播给所有人(自己除外)
+    socket.broadcast.emit("online-users", {
+      onlineUsers: Array.from(onlineUsers.keys()),
+    });
+  });
+
+  // 退出登录
+  socket.on("login-out", (userId) => {
+    onlineUsers.delete(userId);
+    socket.broadcast.emit("online-users", {
+      onlineUsers: Array.from(onlineUsers.keys())
+    })
   });
 
   // 监听好友发送的消息到指定的房间发送消息
