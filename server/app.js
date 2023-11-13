@@ -97,4 +97,27 @@ io.on("connection", async (socket) => {
     const sendUserSocket = onlineUsers.get(data._id);
     socket.to(sendUserSocket).emit("video-call-accepted");
   });
+
+  // 添加好友
+  socket.on('add-friend', (data) => {
+    const sendUserSocket = onlineUsers.get(data.friendId);
+    if(sendUserSocket) {
+      socket.to(sendUserSocket).emit('add-friend-req', data)
+    }
+  })
+
+  // 申请被同意
+  socket.on('accept-req', (data) => {
+    const sendUserSocket = onlineUsers.get(data.toId);
+    if(sendUserSocket) {
+      socket.to(sendUserSocket).emit('accept-reqed', data)
+    }
+  })
+  // 拒绝申请
+  socket.on('reject-add', (data) => {
+    const sendUserSocket = onlineUsers.get(data.toId);
+    if(sendUserSocket) {
+      socket.to(sendUserSocket).emit('add-rejected', data)
+    }
+  })
 });

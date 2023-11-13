@@ -5,11 +5,14 @@ import { LoginForm, Avatar } from "@/components"
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { GET_USER } from "@/utils/API-Route";
+
 const Photograph = dynamic(() => import('./Photograph'), { ssr: false })
 
 const CreateAccountSub = () => {
   const router = useRouter()
   const { data: session } = useSession()
+  const userID = session?.user.id
   // 记录表单是否弹出
   const [ isShowForm, setIsShowForm ] = useState(false)
   // 头像url
@@ -27,11 +30,24 @@ const CreateAccountSub = () => {
       setPhoto(session?.user.image)
       setUserName(session?.user.name || '')
       setBio(session?.user.bio)
-    } 
-    // else {
-    //   router.push('/login')
-    // }
+    }
+    else {
+      router.push('/login')
+    }
   }, [session])
+
+  useEffect(() => {
+    // 到数据库检查用户是否存在
+    const isNewUser = async () => {
+      const res = await fetch(`${GET_USER}/${userID}`)
+      if(res.ok) {
+        router.push('/')
+      }
+    }
+    if(userID) {
+      isNewUser()
+    }
+  }, [userID])
 
   // 是否启用相机
   const [ photograph, setPhotograph ] = useState(false)

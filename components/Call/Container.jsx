@@ -171,7 +171,7 @@ const Container = ({ data }) => {
   return (
     <div className="bg-search-input-container-background w-full h-full flex justify-center items-center text-gray-300 relative">
       <div className="flex flex-col gap-5 w-[400px] justify-center items-center">
-        <span className="text-7xl">{data.username}</span>
+        <span className="text-7xl truncate">{data.username}</span>
         <span className="text-lg">{isConnect ? "通话中" : "正在呼叫..."}</span>
         <Image
           src={data.image}
@@ -182,10 +182,6 @@ const Container = ({ data }) => {
         />
         {/* 视频通话的元素 */}
         <div className="my-5 relative bg-red-600" id="remote-video">
-          {/* <div
-            className="absolute bottom-5 right-5 bg-green-600"
-            id="local-audio"
-          ></div> */}
         </div>
 
         <MdOutlineCallEnd

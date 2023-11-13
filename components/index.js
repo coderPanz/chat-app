@@ -34,3 +34,6 @@ export { default as VideoCall } from "./Call/VideoCall";
 export { default as VoiceCall } from "./Call/VoiceCall";
 export { default as InComingVideoCall } from "./Call/InComingVideoCall";
 export { default as InComingVoiceCall } from "./Call/InComingVoiceCall";
+
+// 添加好友组件
+export { default as AddFriends } from './AddFriends/AddFriends'

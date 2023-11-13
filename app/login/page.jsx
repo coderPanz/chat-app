@@ -4,8 +4,11 @@ import { signIn, useSession } from "next-auth/react"
 import { AiFillGithub } from "react-icons/ai";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { GET_USER } from "@/utils/API-Route";
+
 const Login = () => {
   const { data: session } = useSession()
+  const userID = session?.user.id
   const router = useRouter()
   // 一开始进入login页面, session为空, useEffect监控session.user.isNewUser的改变, 若登录成功回调后, session.user.isNewUser发生改变, 根据isNewUser就可以跳转到对应的页面了!
 
@@ -21,14 +24,26 @@ const Login = () => {
 
   // 必须要限制session?.user.isNewUser的类型强制等于boolean才进行路由跳转, 如果使用if-else语句的话会导致组件挂载时其中之一的跳转操作就会被会被执行, 这是错误的!
   useEffect(() => {
-    if(session?.user.isNewUser === true) {
-      router.push('/create-account')
+    // 到数据库检查用户是否存在
+    const isNewUser = async () => {
+      const res = await fetch(`${GET_USER}/${userID}`)
+      if(res.ok) {
+        router.push('/')
+      } else {
+        router.push('/create-account')
+      }
     }
-    else if(session?.user.isNewUser === false) {
-      router.push('/')
+    if(userID) {
+      isNewUser()
     }
-    
-  }, [session?.user.isNewUser])
+    // if(session?.user.isNewUser === true) {
+    //   router.push('/create-account')
+    // }
+    // else if(session?.user.isNewUser === false) {
+    //   router.push('/')
+    // }
+  }, [userID])
+  
   return (
     <div className="bg-panel-header-background h-screen w-screen flex justify-center items-center">
       <Image 

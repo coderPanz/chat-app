@@ -68,7 +68,7 @@ const ChatPageContainer = () => {
           return isRecieve ? (
             <div
               key={item._id}
-              className="flex items-center gap-3 justify-start p-4"
+              className="flex items-center gap-2 justify-start p-4"
             >
               <Image
                 src={createNewChat?.image}
@@ -81,7 +81,7 @@ const ChatPageContainer = () => {
               {item.type === "text" && (
                 <>
                   <AiFillCaretLeft className=" text-green-700" />
-                  <span className="bg-green-700 rounded p-2 ml-[-17px] text-gray-200">
+                  <span className="bg-green-700 rounded p-2 ml-[-13px] text-gray-200">
                     {item.message}
                   </span>
                 </>
@@ -129,7 +129,7 @@ const ChatPageContainer = () => {
           ) : (
             <div
               key={item._id}
-              className="flex items-center gap-3 justify-end p-4"
+              className="flex items-center gap-2 justify-end p-4"
             >
               {/* 文本消息 */}
               {item.type === "text" && (
@@ -137,7 +137,7 @@ const ChatPageContainer = () => {
                   <span className="bg-green-600 rounded p-2 text-gray-200">
                     {item.message}
                   </span>
-                  <AiFillCaretRight className="ml-[-17px] text-green-600" />
+                  <AiFillCaretRight className="ml-[-13px] text-green-600" />
                 </>
               )}
 

@@ -8,6 +8,7 @@ import {
   VideoCall,
   InComingVideoCall,
   InComingVoiceCall,
+  AddFriends
 } from "@/components";
 import { useStateProvider } from "../../utils/Context/StateContext";
 import { useEffect, useRef, useState } from "react";
@@ -22,7 +23,6 @@ const Main = () => {
   const [socketEvent, setSocketEvent] = useState(false);
 
   const { data: session } = useSession();
-
   const [isAddUser, setIsAddUser] = useState(false);
 
   // 若没有创建聊天的话就显示背景图片
@@ -34,8 +34,9 @@ const Main = () => {
       voiceCall,
       inComingVideoCall,
       inComingVoiceCall,
+      isShowReq,
     },
-    dispatch,
+    dispatch
   ] = useStateProvider();
 
   const [messageTemp, setMessageTemp] = useState("");
@@ -146,6 +147,36 @@ const Main = () => {
         })
       });
 
+      // 监听好友申请
+      socket.current.on('add-friend-req', (data) => {
+        dispatch({
+          type: reducerCases.IS_SHOW_REQ,
+          friendInfos: data
+        })
+      })
+
+      // 同意申请并告知好友
+      socket.current.on('accept-reqed', (data) => {
+        dispatch({
+          type: reducerCases.IS_SHOW_REQ,
+          friendInfos: data
+        })
+
+        // 获取最新好友列表
+        dispatch({
+          type: reducerCases.SET_ALL_CONTACTS_PAGE
+        })
+
+      })
+
+      // 拒绝申请
+      socket.current.on('add-rejected', (data) => {
+        dispatch({
+          type: reducerCases.IS_SHOW_REQ,
+          friendInfos: data
+        })
+      })
+
       setSocketEvent(true);
     }
   }, [socket.current]);
@@ -168,6 +199,11 @@ const Main = () => {
           <VideoCall />
         </div>
       )}
+
+      {/* 好友申请组件 */}
+      {isShowReq && <AddFriends />}
+
+      {/* Main组件 */}
       {!videoCall && !voiceCall && (
         <div className="h-[100vh] w-[100vw] text-white grid grid-cols-12">
           <div className="col-span-3">

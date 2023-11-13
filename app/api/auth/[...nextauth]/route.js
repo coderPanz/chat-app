@@ -53,18 +53,12 @@ const authOptions = NextAuth({
       const sessionUser = await User.findOne({
         email: session.user.email,
       });
-      // 数据库没有查询到这使用session标记为新用户true
-      if (!sessionUser) {
-        session.user.isNewUser = true;
-      } else {
-        // 当到数据库中查询到数据时赋值给session对象以便客户端其他组件访问到最新数据
-        session.user.isNewUser = false;
+      if (sessionUser) {
         session.user.image = sessionUser.image;
         session.user.name = sessionUser.username;
         session.user.bio = sessionUser.bio;
         session.user.id = sessionUser._id;
       }
-
       return session;
     },
   },

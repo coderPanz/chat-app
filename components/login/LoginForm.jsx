@@ -1,5 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation"
+
 const LoginForm = ({ userName, handleBioChange, handleUserNameChange, bio, email, photo }) => {
   const router = useRouter()
   // 获取到输入框的值并更新数据库
@@ -14,12 +15,12 @@ const LoginForm = ({ userName, handleBioChange, handleUserNameChange, bio, email
             image: photo
           })
         })
-        const data = await res.json() // 需要转换为json数据才是我们需要的
+        const userInfos = await res.json() // 需要转换为json数据才是我们需要的
         if(res.ok) {
           router.push('/')
         } else {
           // 弹出警告
-          alert(data)
+          alert('创建失败!')
         }
       } catch (error) {
         console.log(error)

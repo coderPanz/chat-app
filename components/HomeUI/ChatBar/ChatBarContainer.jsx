@@ -2,17 +2,20 @@
 import { useEffect, useState } from "react";
 import { MessageList, UserList } from "../../index";
 import { useStateProvider } from "@/utils/Context/StateContext";
+import { useSession } from "next-auth/react";
 
 const ChatBarContainer = () => {
-  const [{ contactsPage, messages }] = useStateProvider();
+  const { data: session } = useSession()
+  const [{ contactsPage }] = useStateProvider();
   // 保存用户列表
   const [userList, setUserList] = useState();
+
   useEffect(() => {
     if (contactsPage) {
       // 获取用户列表
       const getUserList = async () => {
         try {
-          const res = await fetch("api/get-user-list");
+          const res = await fetch(`api/get-user-list/${session?.user.id}`);
           const userList = await res.json();
           setUserList(userList);
         } catch (error) {

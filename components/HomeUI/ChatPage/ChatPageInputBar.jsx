@@ -157,7 +157,7 @@ const ChatPageInputBar = () => {
         {showEmojiPicker && (
           <div
             ref={emojiPickerRef}
-            className="bottom-[70px] left-[382px] z-40 absolute"
+            className="bottom-[70px] left-[0px] z-990 absolute"
           >
             <EmojiPicker onEmojiClick={handleEmojiMessages} theme="dark" />
           </div>

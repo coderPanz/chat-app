@@ -6,34 +6,42 @@ import mongoose, { Schema, model, models } from "mongoose";
 const UserSchema = new Schema({
   email: {
     type: String,
-    unique: [true, '邮件已存在!'],
-    required: [true, '邮件是必须的!']
+    unique: [true, "邮件已存在!"],
+    required: [true, "邮件是必须的!"],
   },
   username: {
     type: String,
-    unique: [true, '用户名已存在!'],
-    required: [true, '用户名是必须的!']
+    unique: [true, "用户名已存在!"],
+    required: [true, "用户名是必须的!"],
   },
   image: {
     type: String,
-    default: ''
+    default: "",
   },
   bio: {
     type: String,
-    default: ''
+    default: "",
+  },
+  // 好友列表
+  friends: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "User",
   },
   // 与Message模型建立关系，表示用户发送的消息数组
   sentMessages: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Message"
+    ref: "Message",
   },
   // 与Message模型建立关系，表示用户接收的消息数组
   recievedMessages: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Message"
+    ref: "Message",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-})
+});
 
-
-const User = models.User || model('User', UserSchema);
+const User = models.User || model("User", UserSchema);
 export default User;

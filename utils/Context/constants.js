@@ -19,5 +19,9 @@ export const reducerCases = {
   // 删除在线用户
   DEL_ONLINE_USER: "DEL_ONLINE_USER",
   // 退出聊天界面
-  EXIT_CHAT: "EXIT_CHAT"
+  EXIT_CHAT: "EXIT_CHAT",
+  // 当前登录用户的消息
+  USER_INFOS: "USER_INFOS",
+  // 是否显示好友请求界面
+  IS_SHOW_REQ: "IS_SHOW_REQ",
 }

@@ -18,7 +18,6 @@ export const POST = async (req) => {
     // 以便后期可以在聊天列表显示历史聊天
     const userFrom = await User.findById(fromId);
     const userTo = await User.findById(toId);
-    console.log(userFrom)
     if (userFrom) {
       userFrom.sentMessages.push(createMessage._id);
       await userFrom.save();
