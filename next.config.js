@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // output: 'export',
   env: {
     GITHUB_ID: process.env.GITHUB_ID,
     GITHUB_SECRET: process.env.GITHUB_SECRET,
@@ -9,8 +10,7 @@ const nextConfig = {
   },
   // 允许你的应用可以加载来自指定域名的图片
   images: {
-    domains: ['avatars.githubusercontent.com', 'localhost'],
+    domains: ['avatars.githubusercontent.com', 'localhost', '121.37.175.16'],
   },
 }
-
 module.exports = nextConfig

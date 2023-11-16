@@ -20,7 +20,12 @@ const Container = ({ data }) => {
   useEffect(() => {
     const getToken = async () => {
       try {
-        const res = await fetch(`${GET_TOKEN_CALL}/${session?.user.id}`);
+        const res = await fetch(`${GET_TOKEN_CALL}`, {
+          method: 'POST',
+          body: JSON.stringify({
+            fromId: session?.user.id
+          })
+        });
         const token = await res.json();
         setToken(token);
       } catch (error) {
@@ -192,4 +197,5 @@ const Container = ({ data }) => {
     </div>
   );
 };
+
 export default Container;

@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react"
 import { useEffect } from 'react'
 import dynamic from 'next/dynamic'
 const Main = dynamic(() => import('../components/HomeUI/Main'))
-// import { Main } from '@/components'
 
 
 export default function Home() {

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { MessageList, UserList } from "../../index";
 import { useStateProvider } from "@/utils/Context/StateContext";
 import { useSession } from "next-auth/react";
+import { GET_USER_LIST } from "@/utils/API-Route";
 
 const ChatBarContainer = () => {
   const { data: session } = useSession()
@@ -15,7 +16,12 @@ const ChatBarContainer = () => {
       // 获取用户列表
       const getUserList = async () => {
         try {
-          const res = await fetch(`api/get-user-list/${session?.user.id}`);
+          const res = await fetch(`${GET_USER_LIST}`, {
+            method: 'POST',
+            body: JSON.stringify({
+              fromId: session?.user.id
+            })
+          });
           const userList = await res.json();
           setUserList(userList);
         } catch (error) {

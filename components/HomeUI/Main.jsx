@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { reducerCases } from "../../utils/Context/constants";
 import { io } from "socket.io-client";
-import { SOCKETURL } from "@/utils/API-Route";
+import { SOCKETURL, GET_MESSAGE_PRIVATE } from "@/utils/API-Route";
 const Main = () => {
   // 使用useRef保持socket的持久连接
   const socket = useRef();
@@ -44,9 +44,13 @@ const Main = () => {
   // 获取该用户与对应好友的聊天记录(发送和接收)
   useEffect(() => {
     const getMessage = async () => {
-      const messageList = await fetch(
-        `api/get-message/${session?.user.id}/${createNewChat?._id}`
-      );
+      const messageList = await fetch(`${GET_MESSAGE_PRIVATE}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          fromId: session?.user.id,
+          toId: createNewChat?._id
+        })
+      });
       const messages = await messageList.json();
       dispatch({
         type: reducerCases.SET_MESSAGES,
@@ -65,7 +69,6 @@ const Main = () => {
     if (!isAddUser) {
       socket.current = io(SOCKETURL);
       // 全局保存socket
-      console.log("增加用户");
       dispatch({ type: reducerCases.SET_SOCKET, socket });
       socket.current.emit("add-user", session?.user.id.toString());
     }

@@ -26,7 +26,12 @@ const Login = () => {
   useEffect(() => {
     // 到数据库检查用户是否存在
     const isNewUser = async () => {
-      const res = await fetch(`${GET_USER}/${userID}`)
+      const res = await fetch(`${GET_USER}/is-exist`, {
+        method: 'POST',
+        body: JSON.stringify({
+          fromId: userID
+        })
+      })
       if(res.ok) {
         router.push('/')
       } else {
