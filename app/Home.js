@@ -8,6 +8,7 @@ export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
+  
   useEffect(() => {
     localStorage.setItem("loginInfos", session?.user);
     const isLogin = localStorage.getItem("loginInfos");

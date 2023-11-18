@@ -10,10 +10,10 @@ import {
   InComingVoiceCall,
   AddFriends
 } from "@/components";
-import { useStateProvider } from "../../utils/Context/StateContext";
+import { useStateProvider } from "@/utils/Context/StateContext";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { reducerCases } from "../../utils/Context/constants";
+import { reducerCases } from "@/utils/Context/constants";
 import { io } from "socket.io-client";
 import { SOCKETURL, GET_MESSAGE_PRIVATE } from "@/utils/API-Route";
 const Main = () => {
@@ -23,6 +23,7 @@ const Main = () => {
   const [socketEvent, setSocketEvent] = useState(false);
 
   const { data: session } = useSession();
+
   const [isAddUser, setIsAddUser] = useState(false);
 
   // 若没有创建聊天的话就显示背景图片
@@ -215,9 +216,7 @@ const Main = () => {
           {/* 当没有进入聊天界面时显示的一个背景 */}
           {createNewChat ? (
             <div
-              className={`col-span-9 ${
-                messagesSearch ? "grid grid-cols-2" : ""
-              }`}
+              className={`col-span-9 ${messagesSearch ? "grid grid-cols-2" : ""}`}
             >
               <ChatPage />
               {messagesSearch && <SearchMessages />}

@@ -1,26 +1,26 @@
 "use client"
 import { useRouter } from "next/navigation"
-
+import { CREATE_USER } from "@/utils/API-Route"
 const LoginForm = ({ userName, handleBioChange, handleUserNameChange, bio, email, photo }) => {
   const router = useRouter()
   // 获取到输入框的值并更新数据库
-  const handleCreateUser = async (e) => {
+  const handleCreateUser = async () => {
       try {
-        const res = await fetch('api/create-account', {
+        const res = await fetch(CREATE_USER, {
           method: 'POST',
           body: JSON.stringify({
             username: userName,
             bio: bio,
             email: email,
-            image: photo
+            image: photo,
+            isNewUser: false
           })
         })
-        const userInfos = await res.json() // 需要转换为json数据才是我们需要的
         if(res.ok) {
           router.push('/')
         } else {
           // 弹出警告
-          alert('创建失败!')
+          alert('表单输入格式不符合规范!')
         }
       } catch (error) {
         console.log(error)

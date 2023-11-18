@@ -38,6 +38,7 @@ const authOptions = NextAuth({
             username: profile.name.replace(" ", "").toLowerCase(),
             image: profile.avatar_url,
             bio: profile.bio.toString(),
+            isNewUser: true
           });
         }
         // 登录成功，返回包含用户是否存在的信息给客户端

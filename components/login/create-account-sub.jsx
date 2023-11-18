@@ -45,14 +45,14 @@ const CreateAccountSub = () => {
           fromId: userID
         })
       })
-      if(res.ok) {
-        router.push('/')
+      const data = await res.json()
+      if(!res.ok) {
+        router.push('/login')
       }
+      if(res.ok && !data.isNewUser) router.push('/')
     }
-    if(userID) {
-      isNewUser()
-    }
-  }, [userID])
+    isNewUser()
+  }, [])
 
   // 是否启用相机
   const [ photograph, setPhotograph ] = useState(false)

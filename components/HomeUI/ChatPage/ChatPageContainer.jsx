@@ -89,7 +89,7 @@ const ChatPageContainer = () => {
               {/* 图片消息 */}
               {item.type === "image" && (
                 <img
-                  src={`/uploads/images/${item.message}`}
+                  src={`http://124.221.254.213:5000/${item.message}`}
                   alt=""
                   className="w-auto h-[200px] rounded-lg"
                 />
@@ -100,12 +100,13 @@ const ChatPageContainer = () => {
                 <div className="flex justify-center items-center">
                   <audio
                     id={`audio${index}`}
-                    src={`/uploads/audios/${item.message}`}
+                    src={`http://124.221.254.213:5000/${item.message}`}
                   ></audio>
+                  <AiFillCaretLeft className=" text-green-600" />
                   <div
                     id={`audio${index}`}
                     onClick={() => handlePlay(index)}
-                    className={`bg-green-600 flex px-2 pt-[10px] pb-2 justify-center items-center rounded `}
+                    className={`bg-green-600 flex px-2 pt-[10px] pb-2 justify-center items-center rounded ml-[-5px]`}
                   >
                     <div
                       className={`load_11 ${
@@ -119,7 +120,6 @@ const ChatPageContainer = () => {
                       <div className="rect5"></div>
                     </div>
                   </div>
-                  <AiFillCaretRight className=" text-green-600 ml-[-5px]" />
                   <span className="text-green-600">
                     {isPlayIndex === index && isPlay && allTime + "s"}
                   </span>
@@ -144,9 +144,9 @@ const ChatPageContainer = () => {
               {/* 图片消息 */}
               {item.type === "image" && (
                 <img
-                  src={`/uploads/images/${item.message}`}
+                  src={`http://124.221.254.213:5000/${item.message}`}
                   alt=""
-                  className="w-auto h-[200px] rounded-lg mr-1"
+                  className="w-[200px] h-[200px] rounded-lg mr-1"
                 />
               )}
 
@@ -155,7 +155,7 @@ const ChatPageContainer = () => {
                 <div className="flex justify-center items-center">
                   <audio
                     id={`audio${index}`}
-                    src={`/uploads/audios/${item.message}`}
+                    src={`http://124.221.254.213:5000/${item.message}`}
                   ></audio>
                   <div
                     id={`audio${index}`}

@@ -206,7 +206,7 @@ const MessageList = () => {
                       />
                       <div className="flex flex-col">
                         <span className="text-[18px] text-gray-200">
-                          {/* {item.receiver.username} */}
+                          {item.receiver.username}
                         </span>
                         {item.type === "image" && (
                           <span className="text-[12px] text-gray-400">

@@ -4,9 +4,9 @@ export const POST = async (req) => {
   try {
     const { fromId } = await req.json()
     await connectToDB()
-    const data = await User.findById(fromId)
+    const data = await User.findById(fromId).select('isNewUser image username bio')
     if(data) {
-      return new Response(true, { status: 200 });
+      return new Response(JSON.stringify(data), { status: 200 });
     } else {
       return new Response(false, { status: 500 });
     }

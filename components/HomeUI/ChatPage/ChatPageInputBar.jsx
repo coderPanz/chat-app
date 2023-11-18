@@ -12,11 +12,10 @@ import { reducerCases } from "@/utils/Context/constants";
 import { AiFillAudio } from "react-icons/ai";
 
 // 使用延迟加载禁用服务端渲染(因为该组件使用到浏览器api)
-import dynamic from "next/dynamic";
-const AudioVisualizer = dynamic(
-  () => import("../../ChatLogic/AudioVisualizer"),
-  { ssr: false }
-);
+import dynamic from 'next/dynamic'
+const AudioVisualizer = dynamic(() => import('../../ChatLogic/AudioVisualizer'), {
+  ssr: false
+})
 
 const ChatPageInputBar = () => {
   // 获取当前用户登录的数据
@@ -35,9 +34,6 @@ const ChatPageInputBar = () => {
 
   // 记录鼠标是否已经按下
   const [isMousedown, setIsMousedown] = useState(false);
-
-  // 记录鼠标是否移动到取消发送的区域
-  const isSend = useRef(null)
 
   // 是否显示表情
   const handleShowEmoji = () => {
@@ -134,34 +130,12 @@ const ChatPageInputBar = () => {
       // 当鼠标按下(录制音频)时监听鼠标移动, 若移动到'取消发送'的范围则取消发送
       audioInput.addEventListener("mousedown", async () => {
         setIsMousedown(true);
-        // 监听鼠标移动
-        document.addEventListener("mousemove", handleMouseMove);
       });
 
       // 这里也是监听全局鼠标放开, 因为当按下说话的时候可能会移动鼠标到输入框以外的地方松开
       document.addEventListener("mouseup", () => {
         setIsMousedown(false);
-        document.removeEventListener('mousemove', handleMouseMove);
       });
-    }
-
-    const handleMouseMove = async (event) => {
-      // 是否取消发送
-      const cancelEl = document.getElementById("cancelSent");
-      // 获取元素边界坐标信息
-      let targetRect = cancelEl.getBoundingClientRect();
-    
-      // 获取鼠标相对于浏览器窗口的水平及其垂直位置。
-      let mouseX = event.clientX;
-      let mouseY = event.clientY;
-    
-      // 鼠标移动时在目标div范围内, 执行相应的操作
-      if (mouseX >= targetRect.left&&mouseX <= targetRect.right&&
-          mouseY >= targetRect.top&&mouseY <= targetRect.bottom) {
-            isSend.current = true
-          } else {
-            isSend.current = false
-          }
     }
     
     // 添加清理函数(这里需要移除全局的mousedown和mouseup事件, 移除某个dom则会出现dom没有渲染完成因而无法调用对应方法方法!)
@@ -234,15 +208,7 @@ const ChatPageInputBar = () => {
               isMousedown={isMousedown}
               session={session}
               createNewChat={createNewChat}
-              isSend={isSend.current}
             />
-          </div>
-          {/* 取消发送 */}
-          <div
-            id="cancelSent"
-            className="bg-red-500 h-[80px] w-[180px] rounded-lg flex justify-center items-center hover:-translate-y-1 hover:scale-110 transition duration-500 ease-in-out"
-          >
-            取消发送
           </div>
         </div>
       </div>

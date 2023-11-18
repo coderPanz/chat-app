@@ -2,14 +2,14 @@ import { connectToDB } from "@/utils/connect-database/connect-database";
 import { User } from "@/models/index";
 import validateUsername from "@/utils/validateUsername";
 export const POST = async (req) => {
-  const { username, bio, email, image } = await req.json();
+  const { username, bio, email, image, isNewUser } = await req.json();
   try {
     // 连接数据库
     await connectToDB();
     if (validateUsername(username)) {
       const data = await User.findOneAndUpdate(
         { email: email },
-        { $set: { username: username, bio: bio, image: image } },
+        { $set: { username: username, bio: bio, image: image, isNewUser: isNewUser } },
         { new: true }
       );
       return new Response(JSON.stringify(data), { status: 201 });

@@ -27,6 +27,10 @@ const UserSchema = new Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: "User",
   },
+  // 是否是新用户
+  isNewUser: {
+    type: Boolean,
+  },
   // 与Message模型建立关系，表示用户发送的消息数组
   sentMessages: {
     type: [mongoose.Schema.Types.ObjectId],

@@ -1,6 +1,5 @@
 "use client";
 import { useSession, signOut } from "next-auth/react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { BsFillPersonFill } from "react-icons/bs";
@@ -13,7 +12,11 @@ const ChatBarHeader = () => {
   // 控制点击切换联系人列表和消息列表
   const [{ socket }, dispatch] = useStateProvider();
 
+  // 头像
   const [avatar, setAvatar] = useState("/default_avatar.png");
+
+  // 用户名
+  const [userName, setUserName] = useState('')
 
   // 是否显示退出登录框
   const [isShow, setIsShow] = useState(false);
@@ -24,9 +27,23 @@ const ChatBarHeader = () => {
   // 添加好友输入框
   const [input, setInput] = useState("");
 
+  // 实时更新头像框已经用户名
   useEffect(() => {
-    setAvatar(session?.user.image);
-  }, [session]);
+    // 到数据库检查用户是否存在
+    const isNewUser = async () => {
+      const res = await fetch(`${GET_USER}/is-exist`, {
+        method: 'POST',
+        body: JSON.stringify({
+          fromId: session?.user.id
+        })
+      })
+      const data = await res.json()
+      setAvatar(data.image)
+      setUserName(data.username)
+    }
+    isNewUser()
+  }, [session?.user.id])
+
 
   // 点击切换联系人列表和消息列表
   const handleShowList = () => {
@@ -92,14 +109,7 @@ const ChatBarHeader = () => {
 
   return (
     <div className="bg-panel-header-background flex justify-between items-center p-3">
-      <Image
-        src={avatar}
-        alt="ddd"
-        height={40}
-        width={40}
-        className="rounded-full cursor-pointer"
-        onClick={handleExit}
-      />
+      <img src={avatar} alt="avatar" className="rounded-full cursor-pointer w-10 h-10" onClick={handleExit}/>
       {isShow && (
         <div
           className="bg-green-700 absolute ml-[50px] w-[80px] h-[40px] rounded-lg flex justify-center items-center cursor-pointer text-gray-300"
@@ -109,7 +119,7 @@ const ChatBarHeader = () => {
         </div>
       )}
       <div className="grow ml-3 text-gray-300">
-        <span>{session?.user.name}</span>
+        <span>{userName}</span>
       </div>
       <div className="flex justify-center items-center">
         <BsFillPersonFill
