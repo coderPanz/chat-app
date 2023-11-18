@@ -46,10 +46,10 @@ const CreateAccountSub = () => {
         })
       })
       const data = await res.json()
+      if(data.isNewUser===false) router.push('/')
       if(!res.ok) {
         router.push('/login')
       }
-      if(res.ok && data.isNewUser===false) router.push('/')
     }
     isNewUser()
   }, [])
