@@ -8,7 +8,7 @@ export const POST = async (req) => {
     if(data) {
       return new Response(JSON.stringify(data), { status: 200 });
     } else {
-      return new Response(false, { status: 500 });
+      return new Response(JSON.stringify('查找失败!'), { status: 500 });
     }
   } catch (error) {
     return new Response("获取失败!", { status: 500 });

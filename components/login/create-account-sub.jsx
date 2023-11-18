@@ -49,7 +49,7 @@ const CreateAccountSub = () => {
       if(!res.ok) {
         router.push('/login')
       }
-      if(res.ok && !data.isNewUser) router.push('/')
+      if(res.ok && data.isNewUser===false) router.push('/')
     }
     isNewUser()
   }, [])
